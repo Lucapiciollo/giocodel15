@@ -36,27 +36,82 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintBottom_toTopOf="@id/closeButton"
+        app:layout_constraintBottom_toTopOf="@id/actionContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/winnerTime">
 
         <LinearLayout
-            android:id="@+id/rankingContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/result_round_ranking"
+                android:textColor="@color/game_text_primary"
+                android:textSize="@dimen/body_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/rankingContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:orientation="vertical" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xl"
+                android:text="@string/result_table_ranking"
+                android:textColor="@color/game_text_primary"
+                android:textSize="@dimen/body_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/tableRankingContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/tableStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:gravity="center"
+                android:textColor="@color/game_text_secondary"
+                android:textSize="@dimen/body_size" />
+        </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/closeButton"
-        style="@style/Widget.GiocoDel15.PrimaryButton"
+    <LinearLayout
+        android:id="@+id/actionContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/result_close"
-        app:backgroundTint="@color/game_primary"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newRoundButton"
+            style="@style/Widget.GiocoDel15.PrimaryButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/result_new_round"
+            app:backgroundTint="@color/game_primary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/closeButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:text="@string/result_close" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
