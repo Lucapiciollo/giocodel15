@@ -10,6 +10,7 @@ import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityResultBinding
 import com.lucapiciollo.giocodel15.databinding.ItemRankingBinding
 import com.lucapiciollo.giocodel15.feature.game.GameActivity
+import com.lucapiciollo.giocodel15.multiplayer.model.TableMode
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
@@ -67,10 +68,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         }
 
         val winner = array.getJSONObject(0)
-        binding.winnerTitle.text = getString(
-            R.string.result_winner,
-            winner.getString("playerName")
-        )
+        binding.winnerTitle.text = getString(R.string.result_winner, winner.getString("playerName"))
         binding.winnerTime.text = formatElapsed(winner.getLong("elapsedMs"))
 
         for (index in 0 until array.length()) {
@@ -105,6 +103,9 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             .put("seed", seed)
             .put("startDelayMs", START_DELAY_MS)
             .put("expectedPlayers", TableSession.expectedPlayers)
+            .put("maxPlayers", TableSession.maxPlayers)
+            .put("targetWins", TableSession.targetWins)
+            .put("tableMode", TableSession.tableMode.name)
             .toString()
 
         nearby.broadcast(
@@ -127,6 +128,11 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         runCatching {
             val payload = JSONObject(message.payload)
+            TableSession.maxPlayers = payload.optInt("maxPlayers", TableSession.maxPlayers).coerceAtLeast(2)
+            TableSession.targetWins = payload.optInt("targetWins", TableSession.targetWins)
+            TableSession.tableMode = runCatching {
+                TableMode.valueOf(payload.optString("tableMode", TableSession.tableMode.name))
+            }.getOrDefault(TableSession.tableMode)
             scheduleRoundStart(
                 payload.getInt("gridSize"),
                 payload.getLong("seed"),
