@@ -2,6 +2,14 @@
 <resources>
     <string name="app_name">Gioco del 15</string>
     <string name="home_tagline">STESSO PUZZLE. VERA SFIDA.</string>
+    <string name="settings">Impostazioni</string>
+    <string name="settings_subtitle">PERSONALIZZA LA TUA ESPERIENZA</string>
+    <string name="settings_audio">AUDIO</string>
+    <string name="settings_music">Musica di sottofondo</string>
+    <string name="settings_music_helper">Rendi il gioco ancora più avvincente</string>
+    <string name="settings_effects">Effetti sonori</string>
+    <string name="settings_effects_helper">Feedback sonori per ogni mossa</string>
+    <string name="back_home">TORNA ALLA HOME</string>
     <string name="create_table">CREA TAVOLO</string>
     <string name="create_table_helper">Personalizza la tua sfida</string>
     <string name="join_table">ENTRA NEL TAVOLO</string>
