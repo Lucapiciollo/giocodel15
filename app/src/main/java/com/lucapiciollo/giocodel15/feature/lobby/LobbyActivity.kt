@@ -14,6 +14,7 @@ import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityLobbyBinding
 import com.lucapiciollo.giocodel15.databinding.ItemPlayerBinding
 import com.lucapiciollo.giocodel15.feature.game.GameActivity
+import com.lucapiciollo.giocodel15.multiplayer.model.TableMode
 import com.lucapiciollo.giocodel15.multiplayer.nearby.DeviceIdentity
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyPermissions
@@ -33,7 +34,19 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private val isHost by lazy { intent.getBooleanExtra(EXTRA_IS_HOST, false) }
     private val gridSize by lazy { intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE) }
-    private val tableId by lazy { intent.getStringExtra(EXTRA_TABLE_ID) ?: DEFAULT_TABLE_ID }
+    private val initialTableId by lazy { intent.getStringExtra(EXTRA_TABLE_ID) ?: DEFAULT_TABLE_ID }
+    private val tableMode by lazy {
+        runCatching {
+            TableMode.valueOf(intent.getStringExtra(EXTRA_TABLE_MODE) ?: TableMode.TABLE.name)
+        }.getOrDefault(TableMode.TABLE)
+    }
+    private val maxPlayers by lazy {
+        if (tableMode == TableMode.ONE_VS_ONE) 2
+        else intent.getIntExtra(EXTRA_MAX_PLAYERS, DEFAULT_MAX_PLAYERS).coerceIn(2, MAX_SUPPORTED_PLAYERS)
+    }
+    private val targetWins by lazy {
+        intent.getIntExtra(EXTRA_TARGET_WINS, DEFAULT_TARGET_WINS).let { if (it in VALID_TARGET_WINS) it else DEFAULT_TARGET_WINS }
+    }
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -50,9 +63,16 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         nearby = NearbySession.manager(this)
         nearby.listener = this
 
-        TableSession.tableId = tableId
-        TableSession.isHost = isHost
-        TableSession.gridSize = gridSize
+        if (isHost) {
+            TableSession.tableId = initialTableId
+            TableSession.isHost = true
+            TableSession.gridSize = gridSize
+            TableSession.tableMode = tableMode
+            TableSession.maxPlayers = maxPlayers
+            TableSession.targetWins = targetWins
+        } else {
+            TableSession.isHost = false
+        }
 
         binding.startGameButton.isVisible = isHost
         binding.startGameButton.setOnClickListener { startRoundAsHost() }
@@ -78,11 +98,16 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onConnected(endpointId: String) {
-        if (isHost) {
-            val name = endpointNames[endpointId] ?: endpointId
-            addPlayer(endpointId, name, false)
-            TableSession.registerPlayer(endpointId, name)
+        if (!isHost) return
+        if (playerRows.size >= TableSession.maxPlayers) {
+            nearby.disconnect(endpointId)
+            Toast.makeText(this, R.string.lobby_table_full, Toast.LENGTH_SHORT).show()
+            return
         }
+
+        val name = endpointNames[endpointId] ?: endpointId
+        addPlayer(endpointId, name, false)
+        TableSession.registerPlayer(endpointId, name)
     }
 
     override fun onDisconnected(endpointId: String) {
@@ -99,8 +124,22 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             val seed = payload.getLong("seed")
             val delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
             val expectedPlayers = payload.optInt("expectedPlayers", 2).coerceAtLeast(1)
+            val receivedMaxPlayers = payload.optInt("maxPlayers", expectedPlayers).coerceIn(2, MAX_SUPPORTED_PLAYERS)
+            val receivedTargetWins = payload.optInt("targetWins", DEFAULT_TARGET_WINS).let {
+                if (it in VALID_TARGET_WINS) it else DEFAULT_TARGET_WINS
+            }
+            val receivedMode = runCatching {
+                TableMode.valueOf(payload.optString("tableMode", TableMode.TABLE.name))
+            }.getOrDefault(TableMode.TABLE)
+
+            TableSession.tableId = message.tableId
+            TableSession.gridSize = size
             TableSession.expectedPlayers = expectedPlayers
-            scheduleGameStart(size, seed, delayMs, message.roundId, expectedPlayers)
+            TableSession.maxPlayers = receivedMaxPlayers
+            TableSession.targetWins = receivedTargetWins
+            TableSession.tableMode = receivedMode
+
+            scheduleGameStart(size, seed, delayMs, message.roundId, expectedPlayers, message.tableId)
         }.onFailure {
             onError(it.message ?: "Configurazione partita non valida")
         }
@@ -134,19 +173,22 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             .put("seed", seed)
             .put("startDelayMs", START_DELAY_MS)
             .put("expectedPlayers", expectedPlayers)
+            .put("maxPlayers", TableSession.maxPlayers)
+            .put("targetWins", TableSession.targetWins)
+            .put("tableMode", TableSession.tableMode.name)
             .toString()
 
         nearby.broadcast(
             GameMessage(
                 type = GameMessageType.START_GAME,
-                tableId = tableId,
+                tableId = TableSession.tableId,
                 roundId = roundId,
                 payload = payload
             )
         )
         nearby.stopAdvertising()
         binding.startGameButton.isEnabled = false
-        scheduleGameStart(gridSize, seed, START_DELAY_MS, roundId, expectedPlayers)
+        scheduleGameStart(gridSize, seed, START_DELAY_MS, roundId, expectedPlayers, TableSession.tableId)
     }
 
     private fun scheduleGameStart(
@@ -154,7 +196,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         seed: Long,
         delayMs: Long,
         roundId: String,
-        expectedPlayers: Int
+        expectedPlayers: Int,
+        resolvedTableId: String
     ) {
         TableSession.gridSize = size
         TableSession.expectedPlayers = expectedPlayers
@@ -165,7 +208,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
                     putExtra(GameActivity.EXTRA_GRID_SIZE, size)
                     putExtra(GameActivity.EXTRA_SEED, seed)
                     putExtra(GameActivity.EXTRA_IS_HOST, isHost)
-                    putExtra(GameActivity.EXTRA_TABLE_ID, tableId)
+                    putExtra(GameActivity.EXTRA_TABLE_ID, resolvedTableId)
                     putExtra(GameActivity.EXTRA_ROUND_ID, roundId)
                     putExtra(GameActivity.EXTRA_EXPECTED_PLAYERS, expectedPlayers)
                 }
@@ -192,8 +235,15 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         const val EXTRA_GRID_SIZE = "extra_grid_size"
         const val EXTRA_TABLE_ID = "extra_table_id"
         const val EXTRA_HOST_ENDPOINT_ID = "extra_host_endpoint_id"
+        const val EXTRA_TABLE_MODE = "extra_table_mode"
+        const val EXTRA_MAX_PLAYERS = "extra_max_players"
+        const val EXTRA_TARGET_WINS = "extra_target_wins"
         private const val DEFAULT_GRID_SIZE = 4
         private const val DEFAULT_TABLE_ID = "local-table"
+        private const val DEFAULT_MAX_PLAYERS = 4
+        private const val DEFAULT_TARGET_WINS = 3
+        private const val MAX_SUPPORTED_PLAYERS = 8
+        private val VALID_TARGET_WINS = setOf(1, 3, 5)
         private const val START_DELAY_MS = 3000L
     }
 }
