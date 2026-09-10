@@ -4,6 +4,7 @@
     <string name="home_tagline">STESSO PUZZLE. VERA SFIDA.</string>
     <string name="create_table">CREA TAVOLO</string>
     <string name="join_table">ENTRA NEL TAVOLO</string>
+    <string name="solo_play">GIOCA DA SOLO</string>
     <string name="create_table_title">Crea tavolo</string>
     <string name="grid_size">Dimensione griglia</string>
     <string name="table_mode">Modalità</string>
@@ -74,4 +75,9 @@
     <string name="host_closed_title">Tavolo chiuso</string>
     <string name="host_closed_message">Il tavolo è stato chiuso perché l\'host si è disconnesso.</string>
     <string name="host_closed_return_home">TORNA ALLA HOME</string>
+
+    <string name="solo_setup_title">Gioca da solo</string>
+    <string name="solo_result_summary">Completato in %1$s con %2$d mosse</string>
+    <string name="solo_replay">RIGIOCA</string>
+    <string name="solo_go_home">TORNA ALLA HOME</string>
 </resources>

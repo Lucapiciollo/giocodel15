@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
 import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
+import com.lucapiciollo.giocodel15.feature.solo.SoloSetupActivity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -22,6 +23,10 @@ class HomeActivity : AppCompatActivity() {
 
         binding.joinTableButton.setOnClickListener {
             startActivity(Intent(this, NearbyTablesActivity::class.java))
+        }
+
+        binding.soloPlayButton.setOnClickListener {
+            startActivity(Intent(this, SoloSetupActivity::class.java))
         }
     }
 }

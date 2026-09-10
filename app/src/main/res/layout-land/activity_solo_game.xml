@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/game_background"
+    android:padding="@dimen/space_md">
+
+    <com.lucapiciollo.giocodel15.core.ui.PuzzleBoardView
+        android:id="@+id/puzzleBoard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="@dimen/board_max_size" />
+
+    <TextView
+        android:id="@+id/gridLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_xl"
+        android:text="@string/game_grid_label"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        app:layout_constraintStart_toEndOf="@id/puzzleBoard"
+        app:layout_constraintTop_toTopOf="@id/puzzleBoard" />
+
+    <TextView
+        android:id="@+id/gridValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/gridLabel" />
+
+    <TextView
+        android:id="@+id/timerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_lg"
+        android:text="@string/game_timer_label"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/gridValue" />
+
+    <TextView
+        android:id="@+id/timerValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        android:text="00:00.000"
+        android:textColor="@color/game_primary"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/timerLabel"
+        app:layout_constraintTop_toBottomOf="@id/timerLabel" />
+
+    <TextView
+        android:id="@+id/movesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_lg"
+        android:text="@string/game_moves_label"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/timerValue" />
+
+    <TextView
+        android:id="@+id/movesValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/movesLabel"
+        app:layout_constraintTop_toBottomOf="@id/movesLabel" />
+
+    <TextView
+        android:id="@+id/gameStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_lg"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/body_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/movesValue" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/replayButton"
+        style="@style/Widget.GiocoDel15.PrimaryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_md"
+        android:text="@string/solo_replay"
+        android:textColor="@color/game_text_primary"
+        android:visibility="gone"
+        app:backgroundTint="@color/game_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/gameStatus" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/goHomeButton"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_sm"
+        android:text="@string/solo_go_home"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/replayButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
