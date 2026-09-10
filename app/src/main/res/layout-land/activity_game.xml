@@ -14,7 +14,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_max="520dp" />
+        app:layout_constraintWidth_max="@dimen/board_max_size" />
 
     <TextView
         android:id="@+id/gridLabel"
@@ -39,6 +39,29 @@
         app:layout_constraintTop_toBottomOf="@id/gridLabel" />
 
     <TextView
+        android:id="@+id/timerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_lg"
+        android:text="@string/game_timer_label"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        app:layout_constraintStart_toStartOf="@id/gridLabel"
+        app:layout_constraintTop_toBottomOf="@id/gridValue" />
+
+    <TextView
+        android:id="@+id/timerValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        android:text="00:00.000"
+        android:textColor="@color/game_primary"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/timerLabel"
+        app:layout_constraintTop_toBottomOf="@id/timerLabel" />
+
+    <TextView
         android:id="@+id/movesLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +70,7 @@
         android:textColor="@color/game_text_secondary"
         android:textSize="@dimen/caption_size"
         app:layout_constraintStart_toStartOf="@id/gridLabel"
-        app:layout_constraintTop_toBottomOf="@id/gridValue" />
+        app:layout_constraintTop_toBottomOf="@id/timerValue" />
 
     <TextView
         android:id="@+id/movesValue"
@@ -62,12 +85,13 @@
 
     <TextView
         android:id="@+id/gameStatus"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_lg"
         android:textColor="@color/game_text_primary"
         android:textSize="@dimen/body_size"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/gridLabel"
         app:layout_constraintTop_toBottomOf="@id/movesValue" />
 
