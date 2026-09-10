@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="space_xs">4dp</dimen>
-    <dimen name="space_sm">8dp</dimen>
-    <dimen name="space_md">16dp</dimen>
-    <dimen name="space_lg">24dp</dimen>
-    <dimen name="space_xl">32dp</dimen>
-    <dimen name="radius_md">12dp</dimen>
-    <dimen name="radius_lg">18dp</dimen>
-    <dimen name="button_height">56dp</dimen>
-    <dimen name="touch_target_min">44dp</dimen>
-    <dimen name="land_side_panel_width">240dp</dimen>
-    <dimen name="land_header_width">260dp</dimen>
-    <dimen name="board_max_size">520dp</dimen>
-    <dimen name="title_size">30sp</dimen>
-    <dimen name="body_size">16sp</dimen>
-    <dimen name="caption_size">13sp</dimen>
+    <dimen name="space_xs">4dp</dimen><dimen name="space_sm">8dp</dimen><dimen name="space_md">16dp</dimen><dimen name="space_lg">24dp</dimen><dimen name="space_xl">32dp</dimen>
+    <dimen name="space_4">4dp</dimen><dimen name="space_8">8dp</dimen><dimen name="space_12">12dp</dimen><dimen name="space_16">16dp</dimen><dimen name="space_20">20dp</dimen><dimen name="space_24">24dp</dimen><dimen name="space_28">28dp</dimen><dimen name="space_32">32dp</dimen><dimen name="space_40">40dp</dimen>
+    <dimen name="screen_padding">24dp</dimen><dimen name="screen_padding_compact">16dp</dimen>
+    <dimen name="radius_small">10dp</dimen><dimen name="radius_medium">16dp</dimen><dimen name="radius_large">20dp</dimen><dimen name="radius_xlarge">26dp</dimen>
+    <dimen name="radius_md">16dp</dimen><dimen name="radius_lg">20dp</dimen>
+    <dimen name="button_height">60dp</dimen><dimen name="button_height_large">72dp</dimen><dimen name="touch_target_min">48dp</dimen>
+    <dimen name="icon_20">20dp</dimen><dimen name="icon_24">24dp</dimen><dimen name="icon_28">28dp</dimen><dimen name="icon_32">32dp</dimen><dimen name="icon_40">40dp</dimen><dimen name="icon_48">48dp</dimen>
+    <dimen name="land_side_panel_width">240dp</dimen><dimen name="land_header_width">260dp</dimen><dimen name="board_max_size">560dp</dimen>
+    <dimen name="home_logo_text">44sp</dimen><dimen name="screen_title">36sp</dimen><dimen name="screen_subtitle">13sp</dimen><dimen name="section_title">20sp</dimen><dimen name="body_size">16sp</dimen><dimen name="body_secondary">14sp</dimen><dimen name="caption_size">12sp</dimen><dimen name="button_text">19sp</dimen><dimen name="hud_label">12sp</dimen><dimen name="hud_value">24sp</dimen><dimen name="timer_value">30sp</dimen>
+    <dimen name="title_size">36sp</dimen>
 </resources>
