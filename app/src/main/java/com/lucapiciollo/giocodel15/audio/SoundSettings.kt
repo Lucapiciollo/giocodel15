@@ -2,7 +2,8 @@ package com.lucapiciollo.giocodel15.audio
 
 import android.content.Context
 
-/** Persists the user's sound preferences (SharedPreferences-backed). Both default to enabled. */
+/** Persists the user's sound preferences (SharedPreferences-backed). Sound effects default to
+ * enabled; background music defaults to disabled (opt-in). */
 object SoundSettings {
     private const val PREFS_NAME = "sound_settings"
     private const val KEY_SFX_ENABLED = "sfx_enabled"
@@ -12,7 +13,7 @@ object SoundSettings {
         prefs(context).getBoolean(KEY_SFX_ENABLED, true)
 
     fun isMusicEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_MUSIC_ENABLED, true)
+        prefs(context).getBoolean(KEY_MUSIC_ENABLED, false)
 
     fun setSfxEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean(KEY_SFX_ENABLED, enabled).apply()
