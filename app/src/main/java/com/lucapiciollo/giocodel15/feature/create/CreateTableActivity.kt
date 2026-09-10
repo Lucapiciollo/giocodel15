@@ -19,13 +19,21 @@ class CreateTableActivity : AppCompatActivity() {
         binding = ActivityCreateTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.backButton.setOnClickListener { finish() }
+
         binding.modeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener
             val oneVsOne = checkedId == R.id.modeOneVsOneButton
             if (oneVsOne) binding.maxPlayersGroup.check(R.id.max2Button)
             setGroupEnabled(binding.maxPlayersGroup, !oneVsOne)
             binding.maxPlayersLabel.isEnabled = !oneVsOne
+            renderSummary()
         }
+        binding.gridSizeGroup.addOnButtonCheckedListener { _, _, isChecked -> if (isChecked) renderSummary() }
+        binding.maxPlayersGroup.addOnButtonCheckedListener { _, _, isChecked -> if (isChecked) renderSummary() }
+        binding.targetWinsGroup.addOnButtonCheckedListener { _, _, isChecked -> if (isChecked) renderSummary() }
+
+        renderSummary()
 
         binding.continueButton.setOnClickListener {
             val mode = selectedMode()
@@ -43,17 +51,26 @@ class CreateTableActivity : AppCompatActivity() {
         }
     }
 
+    private fun renderSummary() {
+        val mode = selectedMode()
+        val maxPlayers = if (mode == TableMode.ONE_VS_ONE) 2 else selectedMaxPlayers()
+        val modeLabel = if (mode == TableMode.ONE_VS_ONE) getString(R.string.mode_one_vs_one) else getString(R.string.mode_table)
+        binding.configSummary.text = getString(
+            R.string.config_summary_value,
+            modeLabel,
+            selectedGridSize(),
+            maxPlayers,
+            selectedTargetWins()
+        )
+    }
+
     private fun setGroupEnabled(group: ViewGroup, enabled: Boolean) {
         group.isEnabled = enabled
         group.alpha = if (enabled) 1f else DISABLED_ALPHA
-        for (index in 0 until group.childCount) {
-            group.getChildAt(index).isEnabled = enabled
-        }
+        for (index in 0 until group.childCount) group.getChildAt(index).isEnabled = enabled
     }
 
-    private fun selectedMode(): TableMode = if (
-        binding.modeGroup.checkedButtonId == R.id.modeOneVsOneButton
-    ) TableMode.ONE_VS_ONE else TableMode.TABLE
+    private fun selectedMode(): TableMode = if (binding.modeGroup.checkedButtonId == R.id.modeOneVsOneButton) TableMode.ONE_VS_ONE else TableMode.TABLE
 
     private fun selectedGridSize(): Int = when (binding.gridSizeGroup.checkedButtonId) {
         R.id.grid3Button -> 3
