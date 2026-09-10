@@ -36,10 +36,12 @@
     <string name="result_close">ESCI DAL TAVOLO</string>
     <string name="lobby_title">Lobby</string>
     <string name="lobby_waiting">In attesa di giocatori…</string>
+    <string name="lobby_grid_waiting">%1$d×%2$d · %3$s</string>
     <string name="lobby_players">Giocatori connessi</string>
     <string name="lobby_table_full">Tavolo pieno</string>
     <string name="lobby_status_host">HOST</string>
     <string name="lobby_status_connected">CONNESSO</string>
+    <string name="lobby_invalid_start_game">Configurazione partita non valida</string>
     <string name="start_game">AVVIA PARTITA</string>
     <string name="nearby_title">Tavoli nelle vicinanze</string>
     <string name="nearby_searching">Ricerca tavoli Nearby…</string>
@@ -64,6 +66,10 @@
     <string name="result_status_disconnected">Disconnesso</string>
     <string name="result_position_none">–</string>
     <string name="result_new_table">NUOVO TAVOLO</string>
+    <string name="result_invalid_new_round">Nuova manche non valida</string>
+    <string name="result_medal_gold">🥇</string>
+    <string name="result_medal_silver">🥈</string>
+    <string name="result_medal_bronze">🥉</string>
 
     <string name="host_closed_title">Tavolo chiuso</string>
     <string name="host_closed_message">Il tavolo è stato chiuso perché l\'host si è disconnesso.</string>

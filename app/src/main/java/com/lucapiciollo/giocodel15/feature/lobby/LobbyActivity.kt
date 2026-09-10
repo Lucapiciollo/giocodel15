@@ -190,7 +190,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             val roundId = message.roundId ?: seed.toString()
             scheduleGameStart(size, seed, startAt, roundId, expectedPlayers, message.tableId)
         }.onFailure {
-            onError(it.message ?: "Configurazione partita non valida")
+            onError(it.message ?: getString(R.string.lobby_invalid_start_game))
         }
     }
 
@@ -208,7 +208,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private fun startHostAdvertising() {
         nearby.startAdvertising(DeviceIdentity.displayName(this))
-        binding.lobbySubtitle.text = "${gridSize}×${gridSize} · ${getString(R.string.lobby_waiting)}"
+        binding.lobbySubtitle.text = getString(R.string.lobby_grid_waiting, gridSize, gridSize, getString(R.string.lobby_waiting))
     }
 
     private fun startRoundAsHost() {

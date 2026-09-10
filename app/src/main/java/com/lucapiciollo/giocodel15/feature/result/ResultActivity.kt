@@ -214,7 +214,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
                 message.roundId ?: seed.toString(),
                 payload.optInt("expectedPlayers", TableSession.expectedPlayers).coerceAtLeast(1)
             )
-        }.onFailure { onError(it.message ?: "Nuova manche non valida") }
+        }.onFailure { onError(it.message ?: getString(R.string.result_invalid_new_round)) }
     }
 
     private fun scheduleRoundStart(
@@ -270,9 +270,9 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun medalOrPosition(index: Int): String = when (index) {
-        0 -> "🥇"
-        1 -> "🥈"
-        2 -> "🥉"
+        0 -> getString(R.string.result_medal_gold)
+        1 -> getString(R.string.result_medal_silver)
+        2 -> getString(R.string.result_medal_bronze)
         else -> (index + 1).toString()
     }
 
