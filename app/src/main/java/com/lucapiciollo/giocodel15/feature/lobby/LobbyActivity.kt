@@ -5,11 +5,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityLobbyBinding
 import com.lucapiciollo.giocodel15.databinding.ItemPlayerBinding
@@ -49,14 +49,14 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         nearby = NearbySession.manager(this)
         nearby.listener = this
 
-        binding.startGameButton.visibility = if (isHost) View.VISIBLE else View.GONE
+        binding.startGameButton.isVisible = isHost
         binding.startGameButton.setOnClickListener { startRoundAsHost() }
 
         if (isHost) {
             addPlayer("host", DeviceIdentity.displayName(this), true)
             requestPermissionsAndAdvertise()
         } else {
-            binding.lobbySubtitle.setText(R.string.lobby_waiting)
+            binding.lobbySubtitle.text = getString(R.string.lobby_waiting)
         }
     }
 
@@ -83,11 +83,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         runCatching {
             val payload = JSONObject(message.payload)
-            scheduleGameStart(
-                size = payload.getInt("gridSize"),
-                seed = payload.getLong("seed"),
-                delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
-            )
+            val size = payload.getInt("gridSize")
+            val seed = payload.getLong("seed")
+            val delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
+            val expectedPlayers = payload.optInt("expectedPlayers", 2).coerceAtLeast(1)
+            scheduleGameStart(size, seed, delayMs, message.roundId, expectedPlayers)
         }.onFailure {
             onError(it.message ?: "Configurazione partita non valida")
         }
@@ -112,32 +112,45 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private fun startRoundAsHost() {
         val seed = System.currentTimeMillis()
+        val roundId = seed.toString()
+        val expectedPlayers = playerRows.size.coerceAtLeast(1)
         val payload = JSONObject()
             .put("gridSize", gridSize)
             .put("seed", seed)
             .put("startDelayMs", START_DELAY_MS)
+            .put("expectedPlayers", expectedPlayers)
             .toString()
 
         nearby.broadcast(
             GameMessage(
                 type = GameMessageType.START_GAME,
                 tableId = tableId,
-                roundId = seed.toString(),
+                roundId = roundId,
                 payload = payload
             )
         )
         nearby.stopAdvertising()
         binding.startGameButton.isEnabled = false
-        scheduleGameStart(gridSize, seed, START_DELAY_MS)
+        scheduleGameStart(gridSize, seed, START_DELAY_MS, roundId, expectedPlayers)
     }
 
-    private fun scheduleGameStart(size: Int, seed: Long, delayMs: Long) {
+    private fun scheduleGameStart(
+        size: Int,
+        seed: Long,
+        delayMs: Long,
+        roundId: String,
+        expectedPlayers: Int
+    ) {
         binding.lobbySubtitle.text = "3 · 2 · 1 · VIA"
         handler.postDelayed({
             startActivity(
                 Intent(this, GameActivity::class.java).apply {
                     putExtra(GameActivity.EXTRA_GRID_SIZE, size)
                     putExtra(GameActivity.EXTRA_SEED, seed)
+                    putExtra(GameActivity.EXTRA_IS_HOST, isHost)
+                    putExtra(GameActivity.EXTRA_TABLE_ID, tableId)
+                    putExtra(GameActivity.EXTRA_ROUND_ID, roundId)
+                    putExtra(GameActivity.EXTRA_EXPECTED_PLAYERS, expectedPlayers)
                 }
             )
         }, delayMs.coerceAtLeast(0L))
