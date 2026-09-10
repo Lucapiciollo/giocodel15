@@ -15,8 +15,14 @@
     <string name="game_grid_label">GRIGLIA</string>
     <string name="game_grid_value">%1$d×%2$d</string>
     <string name="game_moves_label">MOSSE</string>
+    <string name="game_timer_label">TEMPO</string>
     <string name="game_status_playing">In gioco</string>
     <string name="game_status_completed">Completato!</string>
+    <string name="game_waiting_results">Hai finito. Attendo gli altri giocatori…</string>
+    <string name="game_finished_count">Arrivati %1$d/%2$d</string>
+    <string name="result_winner">🏆 %1$s vince</string>
+    <string name="result_no_results">Nessun risultato disponibile</string>
+    <string name="result_close">CHIUDI</string>
     <string name="lobby_title">Lobby</string>
     <string name="lobby_waiting">In attesa di giocatori…</string>
     <string name="lobby_players">Giocatori connessi</string>
