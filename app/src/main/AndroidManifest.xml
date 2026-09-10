@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Required by Nearby Connections, scoped by Android version. -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" android:maxSdkVersion="31" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" android:maxSdkVersion="31" />
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -20,21 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GiocoDel15">
 
-        <activity
-            android:name=".feature.nearby.NearbyTablesActivity"
-            android:screenOrientation="unspecified" />
-
-        <activity
-            android:name=".feature.lobby.LobbyActivity"
-            android:screenOrientation="unspecified" />
-
-        <activity
-            android:name=".feature.game.GameActivity"
-            android:screenOrientation="unspecified" />
-
-        <activity
-            android:name=".feature.create.CreateTableActivity"
-            android:screenOrientation="unspecified" />
+        <activity android:name=".feature.result.ResultActivity" android:screenOrientation="unspecified" />
+        <activity android:name=".feature.nearby.NearbyTablesActivity" android:screenOrientation="unspecified" />
+        <activity android:name=".feature.lobby.LobbyActivity" android:screenOrientation="unspecified" />
+        <activity android:name=".feature.game.GameActivity" android:screenOrientation="unspecified" />
+        <activity android:name=".feature.create.CreateTableActivity" android:screenOrientation="unspecified" />
 
         <activity
             android:name=".feature.home.HomeActivity"
