@@ -25,11 +25,23 @@ class PuzzleBoardView @JvmOverloads constructor(
     private val density = resources.displayMetrics.density
     private val tileStartColor = ContextCompat.getColor(context, R.color.game_tile)
     private val tileEndColor = ContextCompat.getColor(context, R.color.game_tile_dark)
+    private val tileBaseColor = ContextCompat.getColor(context, R.color.game_tile_shadow)
     private val glowColor = withAlpha(ContextCompat.getColor(context, R.color.game_primary), GLOW_ALPHA)
 
-    private val tilePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    /** Solid "side" of the 3D bevel: a flat-color step peeking out from behind the tile face,
+     * offset downward, simulating physical thickness (like a chiclet/arcade button). Also
+     * carries the soft ambient contact shadow, since it sits at the lowest visual point. */
+    private val basePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = tileBaseColor
         setShadowLayer(SHADOW_RADIUS_DP * density, 0f, SHADOW_DY_DP * density, SHADOW_COLOR)
     }
+
+    /** Tile face: diagonal gradient, shader assigned per-tile in onDraw. */
+    private val tilePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    /** Glossy top-lit highlight overlaid on the face for a rounded/raised look. */
+    private val highlightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+
     private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = glowColor
         setShadowLayer(GLOW_RADIUS_DP * density, 0f, 0f, glowColor)
@@ -107,6 +119,7 @@ class PuzzleBoardView @JvmOverloads constructor(
         val tileSize = (boardSize - totalGap) / state.size
         val cornerRadius = config.cornerRadiusDp * density
         val glowInset = GLOW_INSET_DP * density
+        val bevelDepth = BEVEL_DEPTH_DP * density
 
         val movableIndices = if (config.interactionEnabled) {
             PuzzleEngine.movableTileIndices(state)
@@ -133,11 +146,25 @@ class PuzzleBoardView @JvmOverloads constructor(
                 canvas.drawRoundRect(glowRect, cornerRadius, cornerRadius, glowPaint)
             }
 
+            // 1) Solid base "side" of the tile, offset down: gives the tile physical thickness
+            // and carries the soft ambient contact shadow (chiclet/3D-button look).
+            val baseRect = RectF(rect.left, rect.top + bevelDepth, rect.right, rect.bottom + bevelDepth)
+            canvas.drawRoundRect(baseRect, cornerRadius, cornerRadius, basePaint)
+
+            // 2) Tile face: diagonal gradient, drawn at the un-shifted position so the base
+            // peeks out from underneath as a flat-color edge.
             tilePaint.shader = LinearGradient(
                 rect.left, rect.top, rect.right, rect.bottom,
                 tileStartColor, tileEndColor, Shader.TileMode.CLAMP
             )
             canvas.drawRoundRect(rect, cornerRadius, cornerRadius, tilePaint)
+
+            // 3) Glossy top-lit highlight for a rounded/raised look.
+            highlightPaint.shader = LinearGradient(
+                rect.left, rect.top, rect.left, rect.bottom,
+                HIGHLIGHT_COLOR, TRANSPARENT, Shader.TileMode.CLAMP
+            )
+            canvas.drawRoundRect(rect, cornerRadius, cornerRadius, highlightPaint)
 
             if (config.showNumbers) {
                 textPaint.textSize = tileSize * TEXT_SIZE_RATIO
@@ -203,6 +230,9 @@ class PuzzleBoardView @JvmOverloads constructor(
         private const val GLOW_RADIUS_DP = 14f
         private const val GLOW_INSET_DP = 2f
         private const val GLOW_ALPHA = 0xAA
+        private const val BEVEL_DEPTH_DP = 5f
+        private const val HIGHLIGHT_COLOR = 0x66FFFFFF
+        private const val TRANSPARENT = 0x00FFFFFF
 
         private fun withAlpha(color: Int, alpha: Int): Int =
             (color and 0x00FFFFFF) or (alpha shl 24)

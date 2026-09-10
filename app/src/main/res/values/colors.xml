@@ -9,6 +9,7 @@
     <color name="game_text_secondary">#9FB4C5</color>
     <color name="game_tile">#EAA45B</color>
     <color name="game_tile_dark">#D98A3C</color>
+    <color name="game_tile_shadow">#8C5B22</color>
     <color name="game_tile_text">#2B180D</color>
 
     <color name="aurora_green">#6625C76F</color>
