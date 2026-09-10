@@ -139,7 +139,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             TableSession.targetWins = receivedTargetWins
             TableSession.tableMode = receivedMode
 
-            scheduleGameStart(size, seed, delayMs, message.roundId, expectedPlayers, message.tableId)
+            val roundId = message.roundId ?: seed.toString()
+            scheduleGameStart(size, seed, delayMs, roundId, expectedPlayers, message.tableId)
         }.onFailure {
             onError(it.message ?: "Configurazione partita non valida")
         }

@@ -133,10 +133,11 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             TableSession.tableMode = runCatching {
                 TableMode.valueOf(payload.optString("tableMode", TableSession.tableMode.name))
             }.getOrDefault(TableSession.tableMode)
+            val seed = payload.getLong("seed")
             scheduleRoundStart(
                 payload.getInt("gridSize"),
-                payload.getLong("seed"),
-                message.roundId,
+                seed,
+                message.roundId ?: seed.toString(),
                 payload.optInt("expectedPlayers", TableSession.expectedPlayers).coerceAtLeast(1),
                 payload.optLong("startDelayMs", START_DELAY_MS).coerceAtLeast(0L)
             )

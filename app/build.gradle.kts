@@ -32,5 +32,5 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.11.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
-    implementation("com.google.android.gms:play-services-nearby:19.5.0")
+    implementation("com.google.android.gms:play-services-nearby:19.3.0")
 }
