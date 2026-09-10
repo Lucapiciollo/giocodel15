@@ -28,6 +28,8 @@ class PuzzleBoardView @JvmOverloads constructor(
     private val tileEndColor = ContextCompat.getColor(context, R.color.game_tile_dark)
     private val tileBaseColor = ContextCompat.getColor(context, R.color.game_tile_shadow)
     private val glowColor = withAlpha(ContextCompat.getColor(context, R.color.game_primary), GLOW_ALPHA)
+    private val emptyCellFillColor = ContextCompat.getColor(context, R.color.game_empty_cell_bg)
+    private val emptyCellStrokeColor = ContextCompat.getColor(context, R.color.game_cyan)
 
     /** Solid "side" of the 3D bevel: a flat-color step peeking out from behind the tile face,
      * offset downward, simulating physical thickness (like a chiclet/arcade button). Also
@@ -51,6 +53,20 @@ class PuzzleBoardView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         typeface = android.graphics.Typeface.DEFAULT_BOLD
         color = ContextCompat.getColor(context, R.color.game_tile_text)
+    }
+
+    /** Empty-cell fill: dark, recessed panel look. */
+    private val emptyCellFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = emptyCellFillColor
+    }
+
+    /** Empty-cell stroke: cyan outline with a subtle glow, marking the free slot. */
+    private val emptyCellStrokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = EMPTY_CELL_STROKE_WIDTH_DP * density
+        color = emptyCellStrokeColor
+        setShadowLayer(EMPTY_CELL_GLOW_RADIUS_DP * density, 0f, 0f, withAlpha(emptyCellStrokeColor, EMPTY_CELL_GLOW_ALPHA))
     }
 
     private var state: PuzzleState = PuzzleState.solved(DEFAULT_GRID_SIZE)
@@ -129,13 +145,24 @@ class PuzzleBoardView @JvmOverloads constructor(
         }
 
         state.tiles.forEachIndexed { index, value ->
-            if (value == PuzzleState.EMPTY_TILE) return@forEachIndexed
-
             val row = index / state.size
             val col = index % state.size
             val left = col * (tileSize + gap)
             val top = row * (tileSize + gap)
             val rect = RectF(left, top, left + tileSize, top + tileSize)
+
+            if (value == PuzzleState.EMPTY_TILE) {
+                val strokeInset = (EMPTY_CELL_STROKE_WIDTH_DP * density) / 2f
+                val emptyRect = RectF(
+                    rect.left + strokeInset,
+                    rect.top + strokeInset,
+                    rect.right - strokeInset,
+                    rect.bottom - strokeInset
+                )
+                canvas.drawRoundRect(rect, cornerRadius, cornerRadius, emptyCellFillPaint)
+                canvas.drawRoundRect(emptyRect, cornerRadius, cornerRadius, emptyCellStrokePaint)
+                return@forEachIndexed
+            }
 
             if (index in movableIndices) {
                 val glowRect = RectF(
@@ -235,6 +262,9 @@ class PuzzleBoardView @JvmOverloads constructor(
         private const val BEVEL_DEPTH_DP = 5f
         private const val HIGHLIGHT_COLOR = 0x66FFFFFF
         private const val TRANSPARENT = 0x00FFFFFF
+        private const val EMPTY_CELL_STROKE_WIDTH_DP = 2f
+        private const val EMPTY_CELL_GLOW_RADIUS_DP = 8f
+        private const val EMPTY_CELL_GLOW_ALPHA = 0x80
 
         private fun withAlpha(color: Int, alpha: Int): Int =
             (color and 0x00FFFFFF) or (alpha shl 24)
