@@ -8,6 +8,9 @@
     <dimen name="radius_md">12dp</dimen>
     <dimen name="radius_lg">18dp</dimen>
     <dimen name="button_height">56dp</dimen>
+    <dimen name="touch_target_min">44dp</dimen>
+    <dimen name="land_side_panel_width">240dp</dimen>
+    <dimen name="land_header_width">260dp</dimen>
     <dimen name="title_size">30sp</dimen>
     <dimen name="body_size">16sp</dimen>
     <dimen name="caption_size">13sp</dimen>
