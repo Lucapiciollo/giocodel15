@@ -27,6 +27,9 @@
     <color name="game_tile">#E99B39</color>
     <color name="game_tile_top">#FFD078</color>
     <color name="game_tile_bottom">#E99B39</color>
+    <color name="game_tile_stroke">#FFE3A3</color>
+    <color name="game_tile_shadow">#66321F05</color>
+    <color name="game_empty_tile">#071723</color>
     <color name="game_tile_text">#261703</color>
     <color name="game_transparent">#00000000</color>
 </resources>
