@@ -104,6 +104,11 @@ class NearbyConnectionManager(context: Context) {
             .addOnFailureListener { listener?.onError(it.message ?: "Broadcast fallito") }
     }
 
+    fun disconnect(endpointId: String) {
+        client.disconnectFromEndpoint(endpointId)
+        connectedEndpoints -= endpointId
+    }
+
     fun stopAdvertising() = client.stopAdvertising()
     fun stopDiscovery() = client.stopDiscovery()
 
