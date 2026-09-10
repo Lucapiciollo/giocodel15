@@ -19,4 +19,7 @@
     <dimen name="splash_tile_gap">8dp</dimen>
     <dimen name="splash_tile_text_size">18sp</dimen>
     <dimen name="splash_fly_distance">280dp</dimen>
+    <dimen name="button_elevation">6dp</dimen>
+    <dimen name="button_outline_elevation">3dp</dimen>
+    <dimen name="outline_stroke_width">1.5dp</dimen>
 </resources>

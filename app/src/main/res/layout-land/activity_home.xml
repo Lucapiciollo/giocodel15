@@ -51,21 +51,20 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/joinTableButton"
-        style="@style/Widget.GiocoDel15.PrimaryButton"
+        style="@style/Widget.GiocoDel15.SecondaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_xl"
         android:layout_marginTop="@dimen/space_md"
         android:text="@string/join_table"
         android:textColor="@color/game_text_primary"
-        app:backgroundTint="@color/game_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/createTableButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/soloPlayButton"
-        style="@style/Widget.Material3.Button.OutlinedButton"
+        style="@style/Widget.GiocoDel15.OutlineButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_xl"
