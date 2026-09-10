@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -48,14 +49,14 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         nearby = NearbySession.manager(this)
         nearby.listener = this
 
-        binding.startGameButton.isVisible = isHost
+        binding.startGameButton.visibility = if (isHost) View.VISIBLE else View.GONE
         binding.startGameButton.setOnClickListener { startRoundAsHost() }
 
         if (isHost) {
             addPlayer("host", DeviceIdentity.displayName(this), true)
             requestPermissionsAndAdvertise()
         } else {
-            binding.lobbySubtitle.text = getString(R.string.lobby_waiting)
+            binding.lobbySubtitle.setText(R.string.lobby_waiting)
         }
     }
 
@@ -69,9 +70,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onConnected(endpointId: String) {
-        if (isHost) {
-            addPlayer(endpointId, endpointNames[endpointId] ?: endpointId, false)
-        }
+        if (isHost) addPlayer(endpointId, endpointNames[endpointId] ?: endpointId, false)
     }
 
     override fun onDisconnected(endpointId: String) {
@@ -84,10 +83,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         runCatching {
             val payload = JSONObject(message.payload)
-            val size = payload.getInt("gridSize")
-            val seed = payload.getLong("seed")
-            val delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
-            scheduleGameStart(size, seed, delayMs)
+            scheduleGameStart(
+                size = payload.getInt("gridSize"),
+                seed = payload.getLong("seed"),
+                delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
+            )
         }.onFailure {
             onError(it.message ?: "Configurazione partita non valida")
         }
