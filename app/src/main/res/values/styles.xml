@@ -10,6 +10,10 @@
         <item name="colorSecondary">@color/game_secondary</item>
     </style>
 
+    <style name="Theme.GiocoDel15.Splash">
+        <item name="android:windowBackground">@drawable/bg_aurora</item>
+    </style>
+
     <style name="Widget.GiocoDel15.PrimaryButton" parent="Widget.Material3.Button">
         <item name="android:minHeight">@dimen/button_height</item>
         <item name="cornerRadius">@dimen/radius_md</item>

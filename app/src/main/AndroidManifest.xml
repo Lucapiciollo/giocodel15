@@ -15,7 +15,9 @@
 
     <application
         android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GiocoDel15">
 
@@ -26,11 +28,13 @@
         <activity android:name=".feature.create.CreateTableActivity" android:screenOrientation="unspecified" />
         <activity android:name=".feature.solo.SoloSetupActivity" android:screenOrientation="unspecified" />
         <activity android:name=".feature.solo.SoloGameActivity" android:screenOrientation="unspecified" />
+        <activity android:name=".feature.home.HomeActivity" android:screenOrientation="unspecified" />
 
         <activity
-            android:name=".feature.home.HomeActivity"
+            android:name=".feature.splash.SplashActivity"
             android:exported="true"
-            android:screenOrientation="unspecified">
+            android:screenOrientation="unspecified"
+            android:theme="@style/Theme.GiocoDel15.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

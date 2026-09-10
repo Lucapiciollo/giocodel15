@@ -15,4 +15,8 @@
     <dimen name="title_size">30sp</dimen>
     <dimen name="body_size">16sp</dimen>
     <dimen name="caption_size">13sp</dimen>
+    <dimen name="splash_tile_size">48dp</dimen>
+    <dimen name="splash_tile_gap">8dp</dimen>
+    <dimen name="splash_tile_text_size">18sp</dimen>
+    <dimen name="splash_fly_distance">280dp</dimen>
 </resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Three puzzle tiles + one empty slot: evokes the sliding 15-puzzle. -->
+    <path
+        android:fillColor="#EAA45B"
+        android:pathData="M30,24 H44 A6,6 0 0 1 50,30 V44 A6,6 0 0 1 44,50 H30 A6,6 0 0 1 24,44 V30 A6,6 0 0 1 30,24 Z" />
+    <path
+        android:fillColor="#EAA45B"
+        android:pathData="M64,24 H78 A6,6 0 0 1 84,30 V44 A6,6 0 0 1 78,50 H64 A6,6 0 0 1 58,44 V30 A6,6 0 0 1 64,24 Z" />
+    <path
+        android:fillColor="#EAA45B"
+        android:pathData="M30,58 H44 A6,6 0 0 1 50,64 V78 A6,6 0 0 1 44,84 H30 A6,6 0 0 1 24,78 V64 A6,6 0 0 1 30,58 Z" />
+    <!-- Subtle highlight on the top-left tile for depth, kept minimal for legibility at small sizes. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.18"
+        android:pathData="M30,24 H44 A6,6 0 0 1 50,30 V33 H24 V30 A6,6 0 0 1 30,24 Z" />
+</vector>
