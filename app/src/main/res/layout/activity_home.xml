@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/game_background"
+    android:padding="@dimen/space_lg">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tagline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_sm"
+        android:letterSpacing="0.08"
+        android:text="@string/home_tagline"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/createTableButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/createTableButton"
+        style="@style/Widget.GiocoDel15.PrimaryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xl"
+        android:text="@string/create_table"
+        android:textColor="@color/game_text_primary"
+        app:backgroundTint="@color/game_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tagline" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/joinTableButton"
+        style="@style/Widget.GiocoDel15.PrimaryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_md"
+        android:text="@string/join_table"
+        android:textColor="@color/game_text_primary"
+        app:backgroundTint="@color/game_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/createTableButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
