@@ -5,7 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityCreateTableBinding
-import com.lucapiciollo.giocodel15.feature.game.GameActivity
+import com.lucapiciollo.giocodel15.feature.lobby.LobbyActivity
+import java.util.UUID
 
 class CreateTableActivity : AppCompatActivity() {
 
@@ -18,9 +19,10 @@ class CreateTableActivity : AppCompatActivity() {
 
         binding.continueButton.setOnClickListener {
             startActivity(
-                Intent(this, GameActivity::class.java).apply {
-                    putExtra(GameActivity.EXTRA_GRID_SIZE, selectedGridSize())
-                    putExtra(GameActivity.EXTRA_SEED, System.currentTimeMillis())
+                Intent(this, LobbyActivity::class.java).apply {
+                    putExtra(LobbyActivity.EXTRA_IS_HOST, true)
+                    putExtra(LobbyActivity.EXTRA_GRID_SIZE, selectedGridSize())
+                    putExtra(LobbyActivity.EXTRA_TABLE_ID, UUID.randomUUID().toString())
                 }
             )
         }
