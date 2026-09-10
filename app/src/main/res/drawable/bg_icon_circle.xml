@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generic circular icon container (neutral cyan tint) — used for back/settings icon buttons. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/icon_container_neutral_fill" />
+    <stroke
+        android:width="@dimen/card_stroke_width_thin"
+        android:color="@color/game_outline" />
+</shape>

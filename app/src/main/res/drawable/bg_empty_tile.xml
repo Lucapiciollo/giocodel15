@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Empty puzzle cell — dark fill with a subtle cyan glow stroke. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#3300BFFF" />
+            <corners android:radius="@dimen/radius_medium" />
+        </shape>
+    </item>
+    <item
+        android:left="2dp"
+        android:top="2dp"
+        android:right="2dp"
+        android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/game_empty_cell_bg" />
+            <corners android:radius="@dimen/radius_medium" />
+            <stroke
+                android:width="@dimen/empty_cell_stroke_width"
+                android:color="@color/game_cyan" />
+        </shape>
+    </item>
+</layer-list>

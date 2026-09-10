@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home screen background — extends the global background with an extra
+    soft glow centered behind the logo/tagline area.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_game_global" />
+    <item
+        android:width="340dp"
+        android:height="340dp"
+        android:gravity="top|center_horizontal"
+        android:top="20dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="170dp"
+                android:centerColor="#2600E676"
+                android:endColor="@color/game_transparent" />
+        </shape>
+    </item>
+</layer-list>

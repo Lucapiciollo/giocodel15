@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Puzzle board container background. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/game_surface" />
+    <corners android:radius="@dimen/radius_large" />
+    <stroke
+        android:width="@dimen/board_stroke_width"
+        android:color="@color/game_outline" />
+</shape>

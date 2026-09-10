@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Global app background — Premium Gamer / Neo Arcade / Dark Puzzle.
+    Dark base with three soft radial glow blobs (green, cyan, gold).
+    Portrait variant. See drawable-land/bg_game_global.xml for landscape.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/game_bg_primary" />
+        </shape>
+    </item>
+    <item
+        android:width="320dp"
+        android:height="320dp"
+        android:gravity="top|start"
+        android:left="-100dp"
+        android:top="-80dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="160dp"
+                android:centerColor="#3300E676"
+                android:endColor="@color/game_transparent" />
+        </shape>
+    </item>
+    <item
+        android:width="360dp"
+        android:height="360dp"
+        android:gravity="top|end"
+        android:right="-120dp"
+        android:top="120dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="180dp"
+                android:centerColor="#2E00BFFF"
+                android:endColor="@color/game_transparent" />
+        </shape>
+    </item>
+    <item
+        android:width="300dp"
+        android:height="300dp"
+        android:gravity="bottom|center_horizontal"
+        android:bottom="-140dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="150dp"
+                android:centerColor="#1FFFC107"
+                android:endColor="@color/game_transparent" />
+        </shape>
+    </item>
+</layer-list>
