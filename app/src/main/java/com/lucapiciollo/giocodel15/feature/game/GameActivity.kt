@@ -16,6 +16,7 @@ import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessageType
+import com.lucapiciollo.giocodel15.multiplayer.session.TableSession
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Locale
@@ -50,6 +51,12 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         val gridSize = intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE)
         val seed = intent.getLongExtra(EXTRA_SEED, System.currentTimeMillis())
+
+        TableSession.tableId = tableId
+        TableSession.isHost = isHost
+        TableSession.gridSize = gridSize
+        TableSession.expectedPlayers = expectedPlayers
+
         viewModel.initialize(gridSize, seed)
 
         binding.puzzleBoard.configure(
@@ -121,6 +128,22 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
                 runCatching { resultFromJson(JSONObject(message.payload), endpointId) }
                     .onSuccess(::acceptResult)
             }
+            GameMessageType.PLAYER_RESULT -> if (!isHost) {
+                runCatching {
+                    val json = JSONObject(message.payload)
+                    val position = json.getInt("position")
+                    val name = json.getString("playerName")
+                    val finished = json.getInt("finished")
+                    val total = json.getInt("total")
+                    binding.gameStatus.text = getString(
+                        R.string.game_live_finish,
+                        name,
+                        position,
+                        finished,
+                        total
+                    )
+                }
+            }
             GameMessageType.ROUND_RESULT -> if (!isHost) openResults(message.payload)
             else -> Unit
         }
@@ -129,16 +152,34 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     private fun acceptResult(result: PlayerResult) {
         if (results.containsKey(result.playerId)) return
         if (result.elapsedMs <= 0L || result.moves <= 0) return
+
         results[result.playerId] = result
+        val provisionalRanking = results.values.sortedWith(
+            compareBy<PlayerResult> { it.elapsedMs }.thenBy { it.moves }
+        )
+        val position = provisionalRanking.indexOfFirst { it.playerId == result.playerId } + 1
+
+        nearby.broadcast(
+            GameMessage(
+                type = GameMessageType.PLAYER_RESULT,
+                tableId = tableId,
+                roundId = roundId,
+                payload = JSONObject()
+                    .put("playerName", result.playerName)
+                    .put("position", position)
+                    .put("finished", results.size)
+                    .put("total", expectedPlayers)
+                    .toString()
+            )
+        )
+
         binding.gameStatus.text = getString(R.string.game_finished_count, results.size, expectedPlayers)
 
         if (results.size >= expectedPlayers) {
             val ranking = results.values.sortedWith(
                 compareBy<PlayerResult> { it.elapsedMs }.thenBy { it.moves }
             )
-            val json = JSONArray().apply {
-                ranking.forEach { put(resultToJson(it)) }
-            }.toString()
+            val json = rankingToJson(ranking)
 
             nearby.broadcast(
                 GameMessage(
@@ -153,8 +194,12 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun openResults(rankingJson: String) {
+        val ranking = rankingFromJson(rankingJson)
+        TableSession.applyRound(ranking)
+
         startActivity(Intent(this, ResultActivity::class.java).apply {
             putExtra(ResultActivity.EXTRA_RANKING_JSON, rankingJson)
+            putExtra(ResultActivity.EXTRA_IS_HOST, isHost)
         })
         finish()
     }
@@ -172,6 +217,19 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.gameStatus.setText(
             if (state.isSolved) R.string.game_status_completed else R.string.game_status_playing
         )
+    }
+
+    private fun rankingToJson(ranking: List<PlayerResult>): String = JSONArray().apply {
+        ranking.forEach { put(resultToJson(it)) }
+    }.toString()
+
+    private fun rankingFromJson(json: String): List<PlayerResult> {
+        val array = JSONArray(json)
+        return buildList {
+            for (index in 0 until array.length()) {
+                add(resultFromJson(array.getJSONObject(index), "player-$index"))
+            }
+        }
     }
 
     private fun resultToJson(result: PlayerResult) = JSONObject()
