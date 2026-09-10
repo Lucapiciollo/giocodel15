@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.GiocoDel15" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/game_secondary</item>
+        <item name="android:navigationBarColor">@color/game_background</item>
+        <item name="android:statusBarColor">@color/game_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimary">@color/game_primary</item>
+        <item name="colorSecondary">@color/game_secondary</item>
+    </style>
+
+    <style name="Widget.GiocoDel15.PrimaryButton" parent="Widget.Material3.Button">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>
