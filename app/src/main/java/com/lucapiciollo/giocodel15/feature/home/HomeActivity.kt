@@ -3,6 +3,9 @@ package com.lucapiciollo.giocodel15.feature.home
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyHorizontalGradient
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
 import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
@@ -16,6 +19,11 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.title.applyHorizontalGradient(
+            ContextCompat.getColor(this, R.color.game_primary),
+            ContextCompat.getColor(this, R.color.game_secondary)
+        )
 
         binding.createTableButton.setOnClickListener {
             startActivity(Intent(this, CreateTableActivity::class.java))

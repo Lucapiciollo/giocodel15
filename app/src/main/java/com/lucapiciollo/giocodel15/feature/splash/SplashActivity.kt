@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyHorizontalGradient
 import com.lucapiciollo.giocodel15.databinding.ActivitySplashBinding
 import com.lucapiciollo.giocodel15.feature.home.HomeActivity
 
@@ -24,6 +26,11 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.appTitle.applyHorizontalGradient(
+            ContextCompat.getColor(this, R.color.game_primary),
+            ContextCompat.getColor(this, R.color.game_secondary)
+        )
 
         val tiles = collectTiles(binding.tileGrid)
         val flyDistance = resources.getDimension(R.dimen.splash_fly_distance)
