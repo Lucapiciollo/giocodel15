@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified premium badge: circular medal with a diamond mark + hanging ribbon tails. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9,15.5L6,22l6,-3l6,3l-3,-6.5z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,2m-6.5,0a6.5,6.5 0,1 1,13 0a6.5,6.5 0,1 1,-13 0" />
+    <path
+        android:fillColor="@color/game_bg_primary"
+        android:pathData="M12,2.6m-4.6,0a4.6,4.6 0,1 1,9.2 0a4.6,4.6 0,1 1,-9.2 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,-0.3l1.2,2.4l2.6,0.4l-1.9,1.9l0.5,2.6l-2.4,-1.3l-2.4,1.3l0.5,-2.6l-1.9,-1.9l2.6,-0.4z" />
+</vector>
