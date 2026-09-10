@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
+import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -20,7 +21,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.joinTableButton.setOnClickListener {
-            // Nearby table discovery will be wired in the next milestone.
+            startActivity(Intent(this, NearbyTablesActivity::class.java))
         }
     }
 }
