@@ -28,6 +28,30 @@
         app:layout_constraintTop_toBottomOf="@id/gridLabel" />
 
     <TextView
+        android:id="@+id/timerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_timer_label"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        app:layout_constraintEnd_toStartOf="@id/movesLabel"
+        app:layout_constraintStart_toEndOf="@id/gridLabel"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/timerValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        android:text="00:00.000"
+        android:textColor="@color/game_primary"
+        android:textSize="@dimen/body_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/timerLabel"
+        app:layout_constraintStart_toStartOf="@id/timerLabel"
+        app:layout_constraintTop_toBottomOf="@id/timerLabel" />
+
+    <TextView
         android:id="@+id/movesLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +81,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gridValue"
-        app:layout_constraintWidth_max="520dp" />
+        app:layout_constraintWidth_max="@dimen/board_max_size" />
 
     <TextView
         android:id="@+id/gameStatus"
