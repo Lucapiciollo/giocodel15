@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gioco del 15</string>
+    <string name="home_tagline">STESSO PUZZLE. VERA SFIDA.</string>
+    <string name="create_table">CREA TAVOLO</string>
+    <string name="join_table">ENTRA NEL TAVOLO</string>
+    <string name="create_table_title">Crea tavolo</string>
+    <string name="grid_size">Dimensione griglia</string>
+    <string name="difficulty_easy">Facile</string>
+    <string name="difficulty_classic">Classico</string>
+    <string name="difficulty_hard">Difficile</string>
+    <string name="difficulty_expert">Esperto</string>
+    <string name="continue_label">CONTINUA</string>
+</resources>
