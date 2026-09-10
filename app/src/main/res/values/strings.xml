@@ -80,4 +80,11 @@
     <string name="solo_result_summary">Completato in %1$s con %2$d mosse</string>
     <string name="solo_replay">RIGIOCA</string>
     <string name="solo_go_home">TORNA ALLA HOME</string>
+
+    <string name="settings_entry">⚙ IMPOSTAZIONI</string>
+    <string name="settings_title">Impostazioni</string>
+    <string name="settings_sound_section">Audio</string>
+    <string name="settings_music_label">Musica di sottofondo</string>
+    <string name="settings_sfx_label">Effetti sonori</string>
+    <string name="settings_back">TORNA ALLA HOME</string>
 </resources>

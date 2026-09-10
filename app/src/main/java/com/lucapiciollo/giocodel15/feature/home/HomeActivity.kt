@@ -10,6 +10,7 @@ import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
 import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
+import com.lucapiciollo.giocodel15.feature.settings.SettingsActivity
 import com.lucapiciollo.giocodel15.feature.solo.SoloSetupActivity
 
 class HomeActivity : AppCompatActivity() {
@@ -37,6 +38,10 @@ class HomeActivity : AppCompatActivity() {
 
         binding.soloPlayButton.setOnClickListener {
             startActivity(Intent(this, SoloSetupActivity::class.java))
+        }
+
+        binding.settingsEntry.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 }

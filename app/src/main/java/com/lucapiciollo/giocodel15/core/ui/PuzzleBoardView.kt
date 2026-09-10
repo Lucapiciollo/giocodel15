@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.audio.GameAudioManager
 import com.lucapiciollo.giocodel15.game.engine.PuzzleEngine
 import com.lucapiciollo.giocodel15.game.model.PuzzleState
 import kotlin.math.min
@@ -186,6 +187,7 @@ class PuzzleBoardView @JvmOverloads constructor(
             if (config.hapticFeedback) {
                 performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
             }
+            GameAudioManager.playTileMove(context)
             onTileMoved?.invoke(index)
             onStateChanged?.invoke(state)
             invalidate()

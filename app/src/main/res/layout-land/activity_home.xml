@@ -75,4 +75,23 @@
         app:layout_constraintStart_toEndOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/joinTableButton" />
 
+    <TextView
+        android:id="@+id/settingsEntry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_xl"
+        android:layout_marginTop="@dimen/space_md"
+        android:clickable="true"
+        android:focusable="true"
+        android:minWidth="@dimen/touch_target_min"
+        android:minHeight="@dimen/touch_target_min"
+        android:gravity="center"
+        android:text="@string/settings_entry"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/caption_size"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/soloPlayButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
