@@ -48,6 +48,7 @@
     <dimen name="hud_label">12sp</dimen>
     <dimen name="hud_value">24sp</dimen>
     <dimen name="timer_value">30sp</dimen>
+    <dimen name="timer_value_compact">19sp</dimen>
     <dimen name="uppercase_letter_spacing">0.15</dimen>
 
     <!-- Board tile number sizes per grid (referenced from Kotlin as fractions, kept for docs) -->
