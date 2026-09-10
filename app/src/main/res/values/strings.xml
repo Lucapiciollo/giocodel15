@@ -20,9 +20,16 @@
     <string name="game_status_completed">Completato!</string>
     <string name="game_waiting_results">Hai finito. Attendo gli altri giocatori…</string>
     <string name="game_finished_count">Arrivati %1$d/%2$d</string>
+    <string name="game_live_finish">%1$s ha chiuso in posizione %2$d · arrivati %3$d/%4$d</string>
     <string name="result_winner">🏆 %1$s vince</string>
     <string name="result_no_results">Nessun risultato disponibile</string>
-    <string name="result_close">CHIUDI</string>
+    <string name="result_round_ranking">Classifica manche</string>
+    <string name="result_table_ranking">Classifica tavolo</string>
+    <string name="result_wins">%1$d vittorie</string>
+    <string name="result_new_round">NUOVA MANCHE</string>
+    <string name="result_wait_host">In attesa che l’host avvii la prossima manche…</string>
+    <string name="result_table_winner">🏆 %1$s vince il tavolo con %2$d vittorie</string>
+    <string name="result_close">ESCI DAL TAVOLO</string>
     <string name="lobby_title">Lobby</string>
     <string name="lobby_waiting">In attesa di giocatori…</string>
     <string name="lobby_players">Giocatori connessi</string>
