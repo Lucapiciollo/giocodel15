@@ -5,6 +5,28 @@ import kotlin.math.abs
 
 object PuzzleEngine {
 
+    /**
+     * Deterministic hash of a board layout. Two boards with the same [PuzzleState.size] and
+     * [PuzzleState.tiles] always produce the same hash, on any device/process, since
+     * `List.hashCode()` is defined by content in Kotlin/Java. Used to confirm a remote player's
+     * board actually matches the `gridSize`/`seed` of the round it claims to belong to.
+     */
+    fun boardHash(state: PuzzleState): String = "${state.size}:${state.tiles.hashCode()}"
+
+    /**
+     * Regenerates the round's starting board and replays [moves] (tile indices, in click order)
+     * against it. Returns the resulting [PuzzleState] so callers can check `isSolved`. Illegal
+     * moves (wrong tile index for the current empty slot) are simply ignored, exactly like
+     * [move] does, so a forged sequence cannot fake extra progress.
+     */
+    fun replay(size: Int, seed: Long, moves: List<Int>): PuzzleState {
+        var state = PuzzleGenerator.generate(size, seed)
+        for (tileIndex in moves) {
+            state = move(state, tileIndex)
+        }
+        return state
+    }
+
     fun canMove(state: PuzzleState, tileIndex: Int): Boolean {
         if (tileIndex !in state.tiles.indices) return false
         if (state.tiles[tileIndex] == PuzzleState.EMPTY_TILE) return false

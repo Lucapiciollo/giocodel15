@@ -31,6 +31,7 @@ class PuzzleBoardView @JvmOverloads constructor(
     private var config: PuzzleBoardConfig = PuzzleBoardConfig()
     private var onStateChanged: ((PuzzleState) -> Unit)? = null
     private var onSolved: ((PuzzleState) -> Unit)? = null
+    private var onTileMoved: ((Int) -> Unit)? = null
 
     init {
         isClickable = true
@@ -59,6 +60,11 @@ class PuzzleBoardView @JvmOverloads constructor(
 
     fun setOnSolvedListener(listener: ((PuzzleState) -> Unit)?) {
         onSolved = listener
+    }
+
+    /** Notified with the tile index (click target) of every successful move, in order. */
+    fun setOnTileMovedListener(listener: ((Int) -> Unit)?) {
+        onTileMoved = listener
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -118,6 +124,7 @@ class PuzzleBoardView @JvmOverloads constructor(
             if (config.hapticFeedback) {
                 performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
             }
+            onTileMoved?.invoke(index)
             onStateChanged?.invoke(state)
             invalidate()
 
