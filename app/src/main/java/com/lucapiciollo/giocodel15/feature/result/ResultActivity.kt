@@ -117,7 +117,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             row.playerTime.text = formatElapsed(result.elapsedMs)
             row.playerMoves.text = result.moves.toString()
         } else {
-            row.position.text = "–"
+            row.position.text = getString(R.string.result_position_none)
             row.playerMoves.text = ""
             row.playerTime.text = getString(
                 if (entry.status == RoundParticipantStatus.DISCONNECTED) {

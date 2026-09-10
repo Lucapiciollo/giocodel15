@@ -25,7 +25,6 @@
     <string name="game_status_completed">Completato!</string>
     <string name="game_waiting_results">Hai finito. Attendo gli altri giocatori…</string>
     <string name="game_finished_count">Arrivati %1$d/%2$d</string>
-    <string name="game_live_finish">%1$s ha chiuso in posizione %2$d · arrivati %3$d/%4$d</string>
     <string name="result_winner">🏆 %1$s vince</string>
     <string name="result_no_results">Nessun risultato disponibile</string>
     <string name="result_round_ranking">Classifica manche</string>
@@ -39,6 +38,8 @@
     <string name="lobby_waiting">In attesa di giocatori…</string>
     <string name="lobby_players">Giocatori connessi</string>
     <string name="lobby_table_full">Tavolo pieno</string>
+    <string name="lobby_status_host">HOST</string>
+    <string name="lobby_status_connected">CONNESSO</string>
     <string name="start_game">AVVIA PARTITA</string>
     <string name="nearby_title">Tavoli nelle vicinanze</string>
     <string name="nearby_searching">Ricerca tavoli Nearby…</string>
@@ -61,6 +62,7 @@
 
     <string name="result_status_dnf">DNF</string>
     <string name="result_status_disconnected">Disconnesso</string>
+    <string name="result_position_none">–</string>
     <string name="result_new_table">NUOVO TAVOLO</string>
 
     <string name="host_closed_title">Tavolo chiuso</string>

@@ -307,7 +307,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (playerRows.containsKey(id)) return
         val row = ItemPlayerBinding.inflate(layoutInflater, binding.playersContainer, false)
         row.playerName.text = name
-        row.playerStatus.text = if (host) "HOST" else "CONNESSO"
+        row.playerStatus.text = getString(if (host) R.string.lobby_status_host else R.string.lobby_status_connected)
         playerRows[id] = row
         binding.playersContainer.addView(row.root)
     }
