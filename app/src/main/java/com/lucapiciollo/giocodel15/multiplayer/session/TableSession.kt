@@ -1,6 +1,7 @@
 package com.lucapiciollo.giocodel15.multiplayer.session
 
 import com.lucapiciollo.giocodel15.multiplayer.model.PlayerResult
+import com.lucapiciollo.giocodel15.multiplayer.model.TableMode
 import com.lucapiciollo.giocodel15.multiplayer.model.TableScore
 
 object TableSession {
@@ -8,7 +9,9 @@ object TableSession {
     var isHost: Boolean = false
     var gridSize: Int = 4
     var expectedPlayers: Int = 1
+    var maxPlayers: Int = 4
     var targetWins: Int = 3
+    var tableMode: TableMode = TableMode.TABLE
 
     private val scores = linkedMapOf<String, TableScore>()
     private val lastRanking = mutableListOf<PlayerResult>()
@@ -40,7 +43,9 @@ object TableSession {
         isHost = false
         gridSize = 4
         expectedPlayers = 1
+        maxPlayers = 4
         targetWins = 3
+        tableMode = TableMode.TABLE
         scores.clear()
         lastRanking.clear()
     }
