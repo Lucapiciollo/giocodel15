@@ -2,6 +2,7 @@ package com.lucapiciollo.giocodel15.feature.create
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityCreateTableBinding
@@ -21,9 +22,9 @@ class CreateTableActivity : AppCompatActivity() {
         binding.modeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener
             val oneVsOne = checkedId == R.id.modeOneVsOneButton
-            binding.maxPlayersGroup.isEnabled = !oneVsOne
-            binding.maxPlayersLabel.isEnabled = !oneVsOne
             if (oneVsOne) binding.maxPlayersGroup.check(R.id.max2Button)
+            setGroupEnabled(binding.maxPlayersGroup, !oneVsOne)
+            binding.maxPlayersLabel.isEnabled = !oneVsOne
         }
 
         binding.continueButton.setOnClickListener {
@@ -39,6 +40,14 @@ class CreateTableActivity : AppCompatActivity() {
                     putExtra(LobbyActivity.EXTRA_TARGET_WINS, selectedTargetWins())
                 }
             )
+        }
+    }
+
+    private fun setGroupEnabled(group: ViewGroup, enabled: Boolean) {
+        group.isEnabled = enabled
+        group.alpha = if (enabled) 1f else DISABLED_ALPHA
+        for (index in 0 until group.childCount) {
+            group.getChildAt(index).isEnabled = enabled
         }
     }
 
@@ -64,5 +73,9 @@ class CreateTableActivity : AppCompatActivity() {
         R.id.wins1Button -> 1
         R.id.wins5Button -> 5
         else -> 3
+    }
+
+    companion object {
+        private const val DISABLED_ALPHA = 0.45f
     }
 }
