@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityCreateTableBinding
 import com.lucapiciollo.giocodel15.feature.lobby.LobbyActivity
@@ -21,6 +22,7 @@ class CreateTableActivity : AppCompatActivity() {
         binding = ActivityCreateTableBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         binding.modeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener

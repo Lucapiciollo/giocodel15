@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityLobbyBinding
 import com.lucapiciollo.giocodel15.databinding.ItemPlayerBinding
@@ -76,6 +77,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding = ActivityLobbyBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this

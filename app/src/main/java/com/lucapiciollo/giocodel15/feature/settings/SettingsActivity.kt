@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.audio.GameAudioManager
 import com.lucapiciollo.giocodel15.audio.SoundSettings
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivitySettingsBinding
 
@@ -18,6 +19,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         binding.musicSwitch.isChecked = SoundSettings.isMusicEnabled(this)
         binding.sfxSwitch.isChecked = SoundSettings.isSfxEnabled(this)

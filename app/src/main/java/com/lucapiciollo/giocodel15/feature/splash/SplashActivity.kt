@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyHorizontalGradient
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivitySplashBinding
 import com.lucapiciollo.giocodel15.feature.home.HomeActivity
@@ -28,6 +29,7 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         binding.appTitle.applyHorizontalGradient(
             ContextCompat.getColor(this, R.color.game_primary),

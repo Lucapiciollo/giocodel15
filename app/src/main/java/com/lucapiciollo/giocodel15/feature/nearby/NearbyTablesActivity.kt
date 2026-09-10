@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityNearbyTablesBinding
 import com.lucapiciollo.giocodel15.databinding.ItemNearbyTableBinding
@@ -39,10 +41,16 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         binding = ActivityNearbyTablesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this
         startDiscoveryWhenAllowed()
+
+        binding.cancelButton.setOnClickListener {
+            nearby.stopDiscovery()
+            finish()
+        }
     }
 
     override fun onResume() {
@@ -62,11 +70,15 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         endpointRows[endpointId] = row
         binding.tablesContainer.addView(row.root)
         binding.nearbyStatus.text = getString(R.string.nearby_title)
+        binding.rippleWave.isVisible = false
     }
 
     override fun onEndpointLost(endpointId: String) {
         endpointRows.remove(endpointId)?.let { binding.tablesContainer.removeView(it.root) }
-        if (endpointRows.isEmpty()) binding.nearbyStatus.setText(R.string.nearby_empty)
+        if (endpointRows.isEmpty()) {
+            binding.nearbyStatus.setText(R.string.nearby_empty)
+            binding.rippleWave.isVisible = true
+        }
     }
 
     override fun onConnected(endpointId: String) {
@@ -92,5 +104,10 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
         if (missing.isEmpty()) nearby.startDiscovery() else permissionLauncher.launch(missing.toTypedArray())
+    }
+
+    override fun onDestroy() {
+        nearby.stopDiscovery()
+        super.onDestroy()
     }
 }

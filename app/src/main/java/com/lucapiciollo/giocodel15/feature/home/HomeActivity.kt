@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyHorizontalGradient
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
@@ -22,6 +23,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         binding.title.applyHorizontalGradient(
             ContextCompat.getColor(this, R.color.game_primary),

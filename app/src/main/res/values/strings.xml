@@ -50,6 +50,7 @@
     <string name="nearby_connect">ENTRA</string>
     <string name="nearby_permission_denied">Permessi Nearby necessari per giocare nelle vicinanze.</string>
     <string name="nearby_error">Errore Nearby</string>
+    <string name="nearby_cancel">ANNULLA</string>
 
     <string name="round_end_mode">Fine manche</string>
     <string name="round_end_sprint">SPRINT</string>

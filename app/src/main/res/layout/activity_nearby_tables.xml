@@ -34,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cancelButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nearbyStatus">
@@ -45,5 +45,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
+
+    <com.lucapiciollo.giocodel15.core.ui.RippleWaveView
+        android:id="@+id/rippleWave"
+        android:layout_width="@dimen/ripple_wave_size"
+        android:layout_height="@dimen/ripple_wave_size"
+        app:layout_constraintBottom_toTopOf="@id/cancelButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nearbyStatus" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancelButton"
+        style="@style/Widget.GiocoDel15.OutlineButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/nearby_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

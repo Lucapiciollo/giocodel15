@@ -77,12 +77,18 @@ class NearbyConnectionManager(context: Context) {
     }
 
     fun startAdvertising(displayName: String) {
+        // Defensive: on Activity recreation (e.g. screen rotation) this can be called again while
+        // the underlying client is still advertising from before; stopping first makes it
+        // idempotent instead of failing with STATUS_ALREADY_ADVERTISING.
+        client.stopAdvertising()
         val options = AdvertisingOptions.Builder().setStrategy(STRATEGY).build()
         client.startAdvertising(displayName, SERVICE_ID, connectionCallback, options)
             .addOnFailureListener { listener?.onError(it.message ?: "Impossibile creare il tavolo") }
     }
 
     fun startDiscovery() {
+        // Same idempotency guard as startAdvertising(), for STATUS_ALREADY_DISCOVERING.
+        client.stopDiscovery()
         val options = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
         client.startDiscovery(SERVICE_ID, discoveryCallback, options)
             .addOnFailureListener { listener?.onError(it.message ?: "Impossibile cercare tavoli") }

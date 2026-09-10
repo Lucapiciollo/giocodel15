@@ -14,7 +14,21 @@ fun View.applyStatusBarTopInset() {
     updatePadding(top = initialPaddingTop + statusBarHeightPx(context))
 }
 
+/** Pads this view's bottom by the system navigation bar height, on top of whatever bottom
+ * padding it already declares in XML. Needed for the same edge-to-edge reason as
+ * [applyStatusBarTopInset]: bottom-pinned buttons would otherwise end up partly underneath the
+ * gesture/3-button navigation bar. */
+fun View.applyNavigationBarBottomInset() {
+    val initialPaddingBottom = paddingBottom
+    updatePadding(bottom = initialPaddingBottom + navigationBarHeightPx(context))
+}
+
 private fun statusBarHeightPx(context: Context): Int {
     val resId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resId > 0) context.resources.getDimensionPixelSize(resId) else 0
+}
+
+private fun navigationBarHeightPx(context: Context): Int {
+    val resId = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
     return if (resId > 0) context.resources.getDimensionPixelSize(resId) else 0
 }

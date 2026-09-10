@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.databinding.ActivityGameBinding
@@ -72,6 +73,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
+        binding.root.applyNavigationBarBottomInset()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this
