@@ -3,6 +3,7 @@ package com.lucapiciollo.giocodel15.feature.game
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.databinding.ActivityGameBinding
 
@@ -38,15 +39,17 @@ class GameActivity : AppCompatActivity() {
         }
 
         binding.puzzleBoard.setOnSolvedListener {
-            binding.gameStatus.text = "Completato!"
+            binding.gameStatus.setText(R.string.game_status_completed)
         }
     }
 
     private fun renderStats() {
         val state = viewModel.puzzleState ?: return
         binding.movesValue.text = state.moves.toString()
-        binding.gridValue.text = "${state.size}×${state.size}"
-        binding.gameStatus.text = if (state.isSolved) "Completato!" else "In gioco"
+        binding.gridValue.text = getString(R.string.game_grid_value, state.size, state.size)
+        binding.gameStatus.setText(
+            if (state.isSolved) R.string.game_status_completed else R.string.game_status_playing
+        )
     }
 
     companion object {
