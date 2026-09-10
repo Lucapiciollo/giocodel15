@@ -1,98 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/game_background"
-    android:padding="@dimen/space_md">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_game_play" android:paddingStart="@dimen/screen_padding_compact" android:paddingEnd="@dimen/screen_padding_compact" android:paddingTop="@dimen/space_16" android:paddingBottom="@dimen/space_16">
 
-    <TextView
-        android:id="@+id/gridLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/game_grid_label"
-        android:textColor="@color/game_text_secondary"
-        android:textSize="@dimen/caption_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout android:id="@+id/hudRow" android:layout_width="0dp" android:layout_height="82dp" android:orientation="horizontal" android:baselineAligned="false" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_card_blue" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_8"><TextView android:id="@+id/gridLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:letterSpacing="0.08" android:text="@string/game_grid_label" android:textColor="@color/game_text_secondary" android:textSize="@dimen/hud_label" android:textStyle="bold"/><TextView android:id="@+id/gridValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:fontFamily="sans-serif-condensed" android:textColor="@color/game_text_primary" android:textSize="@dimen/hud_value" android:textStyle="bold"/></LinearLayout>
+        <Space android:layout_width="@dimen/space_8" android:layout_height="1dp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1.45" android:background="@drawable/bg_card_green" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_8"><TextView android:id="@+id/timerLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:letterSpacing="0.08" android:text="@string/game_timer_label" android:textColor="@color/game_text_secondary" android:textSize="@dimen/hud_label" android:textStyle="bold"/><TextView android:id="@+id/timerValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:fontFamily="sans-serif-condensed" android:text="00:00.000" android:textColor="@color/game_green" android:textSize="@dimen/timer_value" android:textStyle="bold"/></LinearLayout>
+        <Space android:layout_width="@dimen/space_8" android:layout_height="1dp"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/bg_card_blue" android:gravity="center" android:orientation="vertical" android:padding="@dimen/space_8"><TextView android:id="@+id/movesLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:letterSpacing="0.08" android:text="@string/game_moves_label" android:textColor="@color/game_text_secondary" android:textSize="@dimen/hud_label" android:textStyle="bold"/><TextView android:id="@+id/movesValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:fontFamily="sans-serif-condensed" android:textColor="@color/game_text_primary" android:textSize="@dimen/hud_value" android:textStyle="bold"/></LinearLayout>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/gridValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_xs"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/body_size"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/gridLabel"
-        app:layout_constraintTop_toBottomOf="@id/gridLabel" />
+    <com.lucapiciollo.giocodel15.core.ui.PuzzleBoardView android:id="@+id/puzzleBoard" android:layout_width="0dp" android:layout_height="0dp" android:layout_marginTop="@dimen/space_16" app:layout_constraintDimensionRatio="1:1" app:layout_constraintWidth_max="@dimen/board_max_size" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@id/hudRow" />
 
-    <TextView
-        android:id="@+id/timerLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/game_timer_label"
-        android:textColor="@color/game_text_secondary"
-        android:textSize="@dimen/caption_size"
-        app:layout_constraintEnd_toStartOf="@id/movesLabel"
-        app:layout_constraintStart_toEndOf="@id/gridLabel"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/timerValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_xs"
-        android:text="00:00.000"
-        android:textColor="@color/game_primary"
-        android:textSize="@dimen/body_size"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/timerLabel"
-        app:layout_constraintStart_toStartOf="@id/timerLabel"
-        app:layout_constraintTop_toBottomOf="@id/timerLabel" />
-
-    <TextView
-        android:id="@+id/movesLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/game_moves_label"
-        android:textColor="@color/game_text_secondary"
-        android:textSize="@dimen/caption_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/movesValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_xs"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/body_size"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/movesLabel"
-        app:layout_constraintTop_toBottomOf="@id/movesLabel" />
-
-    <com.lucapiciollo.giocodel15.core.ui.PuzzleBoardView
-        android:id="@+id/puzzleBoard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/space_xl"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gridValue"
-        app:layout_constraintWidth_max="@dimen/board_max_size" />
-
-    <TextView
-        android:id="@+id/gameStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_lg"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/body_size"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/puzzleBoard" />
+    <TextView android:id="@+id/gameStatus" android:layout_width="wrap_content" android:layout_height="58dp" android:layout_marginTop="@dimen/space_16" android:background="@drawable/bg_card_green" android:fontFamily="sans-serif-condensed" android:gravity="center" android:minWidth="180dp" android:paddingStart="@dimen/space_24" android:paddingEnd="@dimen/space_24" android:text="@string/game_status_playing" android:textColor="@color/game_text_primary" android:textSize="18sp" android:textStyle="bold" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@id/puzzleBoard" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
