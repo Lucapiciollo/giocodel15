@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityNearbyTablesBinding
 import com.lucapiciollo.giocodel15.databinding.ItemNearbyTableBinding
 import com.lucapiciollo.giocodel15.feature.lobby.LobbyActivity
@@ -37,6 +38,7 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         super.onCreate(savedInstanceState)
         binding = ActivityNearbyTablesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.root.applyStatusBarTopInset()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this

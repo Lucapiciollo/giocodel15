@@ -10,13 +10,14 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
         android:text="@string/app_name"
         android:textColor="@color/game_text_primary"
         android:textSize="@dimen/title_size"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tagline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tagline"
@@ -28,11 +29,9 @@
         android:textColor="@color/game_text_secondary"
         android:textSize="@dimen/caption_size"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/createTableButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/title" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createTableButton"

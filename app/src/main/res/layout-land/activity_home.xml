@@ -10,6 +10,7 @@
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
         android:text="@string/app_name"
         android:textColor="@color/game_text_primary"
         android:textSize="@dimen/title_size"

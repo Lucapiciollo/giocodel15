@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivitySoloSetupBinding
 
 /** Entry screen for the offline single-player practice mode: pick a grid size and start
@@ -16,6 +17,7 @@ class SoloSetupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySoloSetupBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.root.applyStatusBarTopInset()
 
         binding.continueButton.setOnClickListener {
             startActivity(

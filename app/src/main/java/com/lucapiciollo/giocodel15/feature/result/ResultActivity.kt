@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.databinding.ActivityResultBinding
 import com.lucapiciollo.giocodel15.databinding.ItemRankingBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
@@ -44,6 +45,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.root.applyStatusBarTopInset()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this
