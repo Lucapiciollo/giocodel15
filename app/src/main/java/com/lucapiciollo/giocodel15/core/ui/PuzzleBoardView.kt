@@ -2,8 +2,10 @@ package com.lucapiciollo.giocodel15.core.ui
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -21,10 +23,21 @@ class PuzzleBoardView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val density = resources.displayMetrics.density
-    private val tilePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val tileStartColor = ContextCompat.getColor(context, R.color.game_tile)
+    private val tileEndColor = ContextCompat.getColor(context, R.color.game_tile_dark)
+    private val glowColor = withAlpha(ContextCompat.getColor(context, R.color.game_primary), GLOW_ALPHA)
+
+    private val tilePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        setShadowLayer(SHADOW_RADIUS_DP * density, 0f, SHADOW_DY_DP * density, SHADOW_COLOR)
+    }
+    private val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = glowColor
+        setShadowLayer(GLOW_RADIUS_DP * density, 0f, 0f, glowColor)
+    }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
         typeface = android.graphics.Typeface.DEFAULT_BOLD
+        color = ContextCompat.getColor(context, R.color.game_tile_text)
     }
 
     private var state: PuzzleState = PuzzleState.solved(DEFAULT_GRID_SIZE)
@@ -36,9 +49,10 @@ class PuzzleBoardView @JvmOverloads constructor(
     init {
         isClickable = true
         importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
-        tilePaint.color = ContextCompat.getColor(context, R.color.game_tile)
-        textPaint.color = ContextCompat.getColor(context, R.color.game_tile_text)
         contentDescription = context.getString(R.string.puzzle_board_content_description)
+        // Canvas shadow layers on non-text shapes are only honored on a software-rendered
+        // layer; the board is small and redrawn only on discrete moves, so the cost is negligible.
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
 
     fun setPuzzleState(newState: PuzzleState) {
@@ -92,6 +106,13 @@ class PuzzleBoardView @JvmOverloads constructor(
         val totalGap = gap * (state.size - 1)
         val tileSize = (boardSize - totalGap) / state.size
         val cornerRadius = config.cornerRadiusDp * density
+        val glowInset = GLOW_INSET_DP * density
+
+        val movableIndices = if (config.interactionEnabled) {
+            PuzzleEngine.movableTileIndices(state)
+        } else {
+            emptyList()
+        }
 
         state.tiles.forEachIndexed { index, value ->
             if (value == PuzzleState.EMPTY_TILE) return@forEachIndexed
@@ -102,6 +123,20 @@ class PuzzleBoardView @JvmOverloads constructor(
             val top = row * (tileSize + gap)
             val rect = RectF(left, top, left + tileSize, top + tileSize)
 
+            if (index in movableIndices) {
+                val glowRect = RectF(
+                    rect.left + glowInset,
+                    rect.top + glowInset,
+                    rect.right - glowInset,
+                    rect.bottom - glowInset
+                )
+                canvas.drawRoundRect(glowRect, cornerRadius, cornerRadius, glowPaint)
+            }
+
+            tilePaint.shader = LinearGradient(
+                rect.left, rect.top, rect.right, rect.bottom,
+                tileStartColor, tileEndColor, Shader.TileMode.CLAMP
+            )
             canvas.drawRoundRect(rect, cornerRadius, cornerRadius, tilePaint)
 
             if (config.showNumbers) {
@@ -162,5 +197,14 @@ class PuzzleBoardView @JvmOverloads constructor(
     companion object {
         private const val DEFAULT_GRID_SIZE = 4
         private const val TEXT_SIZE_RATIO = 0.38f
+        private const val SHADOW_RADIUS_DP = 6f
+        private const val SHADOW_DY_DP = 3f
+        private const val SHADOW_COLOR = 0x8A000000.toInt()
+        private const val GLOW_RADIUS_DP = 14f
+        private const val GLOW_INSET_DP = 2f
+        private const val GLOW_ALPHA = 0xAA
+
+        private fun withAlpha(color: Int, alpha: Int): Int =
+            (color and 0x00FFFFFF) or (alpha shl 24)
     }
 }
