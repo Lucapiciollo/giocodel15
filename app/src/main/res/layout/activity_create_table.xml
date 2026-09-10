@@ -1,91 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/game_background"
-    android:padding="@dimen/space_lg">
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create_table_title"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/title_size"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:padding="@dimen/space_lg">
 
-    <TextView
-        android:id="@+id/gridSizeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_xl"
-        android:text="@string/grid_size"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/body_size"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_table_title"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/title_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/gridSizeGroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_md"
-        app:checkedButton="@id/grid4Button"
-        app:selectionRequired="true"
-        app:singleSelection="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gridSizeLabel">
+        <TextView
+            android:id="@+id/modeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xl"
+            android:text="@string/table_mode"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/body_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/grid3Button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/modeGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="3×3" />
+            android:layout_marginTop="@dimen/space_md"
+            app:checkedButton="@id/modeTableButton"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modeLabel">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/grid4Button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeOneVsOneButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/mode_one_vs_one" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeTableButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/mode_table" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/gridSizeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="@string/grid_size"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/body_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modeGroup" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/gridSizeGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="4×4" />
+            android:layout_marginTop="@dimen/space_md"
+            app:checkedButton="@id/grid4Button"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gridSizeLabel">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/grid5Button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid3Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3×3" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid4Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4×4" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid5Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5×5" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid6Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6×6" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/maxPlayersLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="@string/max_players"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/body_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gridSizeGroup" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/maxPlayersGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="5×5" />
+            android:layout_marginTop="@dimen/space_md"
+            app:checkedButton="@id/max4Button"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/maxPlayersLabel">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/grid6Button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            <com.google.android.material.button.MaterialButton android:id="@+id/max2Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="2" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max4Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max6Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max8Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="8" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/targetWinsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="@string/target_wins"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/body_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/maxPlayersGroup" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/targetWinsGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="6×6" />
+            android:layout_marginTop="@dimen/space_md"
+            app:checkedButton="@id/wins3Button"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/targetWinsLabel">
 
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+            <com.google.android.material.button.MaterialButton android:id="@+id/wins1Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="1" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/wins3Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/wins5Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/continueButton"
-        style="@style/Widget.GiocoDel15.PrimaryButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_xl"
-        android:text="@string/continue_label"
-        android:textColor="@color/game_text_primary"
-        app:backgroundTint="@color/game_primary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gridSizeGroup" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/continueButton"
+            style="@style/Widget.GiocoDel15.PrimaryButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xl"
+            android:text="@string/continue_label"
+            android:textColor="@color/game_text_primary"
+            app:backgroundTint="@color/game_primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/targetWinsGroup" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
