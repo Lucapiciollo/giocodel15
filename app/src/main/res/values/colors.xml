@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="game_background">#091522</color>
+    <color name="game_surface">#102233</color>
+    <color name="game_surface_alt">#163047</color>
+    <color name="game_primary">#25C76F</color>
+    <color name="game_secondary">#169BFF</color>
+    <color name="game_text_primary">#F4F7FA</color>
+    <color name="game_text_secondary">#9FB4C5</color>
+    <color name="game_tile">#EAA45B</color>
+    <color name="game_tile_text">#2B180D</color>
+</resources>
