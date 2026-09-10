@@ -8,6 +8,10 @@
         android:theme="@style/Theme.GiocoDel15">
 
         <activity
+            android:name=".feature.game.GameActivity"
+            android:screenOrientation="unspecified" />
+
+        <activity
             android:name=".feature.create.CreateTableActivity"
             android:screenOrientation="unspecified" />
 
