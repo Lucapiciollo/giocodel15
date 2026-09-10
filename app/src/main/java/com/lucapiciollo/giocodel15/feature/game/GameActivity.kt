@@ -81,13 +81,20 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (viewModel.finishedElapsedMs != null) return
         val elapsed = viewModel.finish()
         val state = viewModel.puzzleState ?: return
-        binding.puzzleBoard.configure(PuzzleBoardConfig(interactionEnabled = false, showNumbers = true, hapticFeedback = true))
+        binding.puzzleBoard.configure(
+            PuzzleBoardConfig(
+                interactionEnabled = false,
+                showNumbers = true,
+                hapticFeedback = true
+            )
+        )
         binding.gameStatus.setText(R.string.game_status_completed)
         binding.timerValue.text = formatElapsed(elapsed)
 
+        val identity = DeviceIdentity.displayName(this)
         val result = PlayerResult(
-            playerId = DeviceIdentity.displayName(this),
-            playerName = DeviceIdentity.displayName(this),
+            playerId = identity,
+            playerName = identity,
             elapsedMs = elapsed,
             moves = state.moves
         )
@@ -100,7 +107,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
                     type = GameMessageType.PLAYER_FINISHED,
                     tableId = tableId,
                     roundId = roundId,
-                    payload = result.toJson().toString()
+                    payload = resultToJson(result).toString()
                 )
             )
             binding.gameStatus.setText(R.string.game_waiting_results)
@@ -111,7 +118,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (message.tableId != tableId || message.roundId != roundId) return
         when (message.type) {
             GameMessageType.PLAYER_FINISHED -> if (isHost) {
-                runCatching { PlayerResult.fromJson(JSONObject(message.payload), endpointId) }
+                runCatching { resultFromJson(JSONObject(message.payload), endpointId) }
                     .onSuccess(::acceptResult)
             }
             GameMessageType.ROUND_RESULT -> if (!isHost) openResults(message.payload)
@@ -126,8 +133,13 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.gameStatus.text = getString(R.string.game_finished_count, results.size, expectedPlayers)
 
         if (results.size >= expectedPlayers) {
-            val ranking = results.values.sortedWith(compareBy<PlayerResult> { it.elapsedMs }.thenBy { it.moves })
-            val json = JSONArray().apply { ranking.forEach { put(it.toJson()) } }.toString()
+            val ranking = results.values.sortedWith(
+                compareBy<PlayerResult> { it.elapsedMs }.thenBy { it.moves }
+            )
+            val json = JSONArray().apply {
+                ranking.forEach { put(resultToJson(it)) }
+            }.toString()
+
             nearby.broadcast(
                 GameMessage(
                     type = GameMessageType.ROUND_RESULT,
@@ -148,14 +160,32 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onDisconnected(endpointId: String) = Unit
-    override fun onError(message: String) { binding.gameStatus.text = message }
+
+    override fun onError(message: String) {
+        binding.gameStatus.text = message
+    }
 
     private fun renderStats() {
         val state = viewModel.puzzleState ?: return
         binding.movesValue.text = state.moves.toString()
         binding.gridValue.text = getString(R.string.game_grid_value, state.size, state.size)
-        binding.gameStatus.setText(if (state.isSolved) R.string.game_status_completed else R.string.game_status_playing)
+        binding.gameStatus.setText(
+            if (state.isSolved) R.string.game_status_completed else R.string.game_status_playing
+        )
     }
+
+    private fun resultToJson(result: PlayerResult) = JSONObject()
+        .put("playerId", result.playerId)
+        .put("playerName", result.playerName)
+        .put("elapsedMs", result.elapsedMs)
+        .put("moves", result.moves)
+
+    private fun resultFromJson(json: JSONObject, fallbackId: String) = PlayerResult(
+        playerId = json.optString("playerId", fallbackId),
+        playerName = json.optString("playerName", fallbackId),
+        elapsedMs = json.getLong("elapsedMs"),
+        moves = json.getInt("moves")
+    )
 
     private fun formatElapsed(elapsedMs: Long): String {
         val minutes = elapsedMs / 60_000
@@ -169,19 +199,6 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         super.onDestroy()
     }
 
-    private fun PlayerResult.toJson() = JSONObject()
-        .put("playerId", playerId)
-        .put("playerName", playerName)
-        .put("elapsedMs", elapsedMs)
-        .put("moves", moves)
-
-    private fun PlayerResult.Companion.fromJson(json: JSONObject, fallbackId: String) = PlayerResult(
-        playerId = json.optString("playerId", fallbackId),
-        playerName = json.optString("playerName", fallbackId),
-        elapsedMs = json.getLong("elapsedMs"),
-        moves = json.getInt("moves")
-    )
-
     companion object {
         const val EXTRA_GRID_SIZE = "extra_grid_size"
         const val EXTRA_SEED = "extra_seed"
@@ -193,5 +210,3 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         private const val TIMER_REFRESH_MS = 50L
     }
 }
-
-private companion object PlayerResultCompanion
