@@ -10,9 +10,10 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/solo_setup_title"
         android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/title_size"
+        android:textSize="@dimen/screen_title"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,10 +42,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gridSizeLabel">
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/grid3Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3×3" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/grid4Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4×4" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/grid5Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5×5" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/grid6Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6×6" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/grid3Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3×3" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/grid4Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4×4" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/grid5Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5×5" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/grid6Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6×6" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <com.google.android.material.button.MaterialButton

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_create_table_activity"
@@ -45,8 +46,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/modeLabel">
-            <com.google.android.material.button.MaterialButton android:id="@+id/modeOneVsOneButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/mode_one_vs_one" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/modeTableButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/mode_table" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/modeOneVsOneButton" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/mode_one_vs_one" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/modeTableButton" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/mode_table" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
@@ -73,10 +74,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/gridSizeLabel">
-            <com.google.android.material.button.MaterialButton android:id="@+id/grid3Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3×3" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/grid4Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4×4" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/grid5Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5×5" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/grid6Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6×6" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid3Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3×3" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid4Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4×4" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid5Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5×5" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/grid6Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6×6" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
@@ -103,10 +104,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/maxPlayersLabel">
-            <com.google.android.material.button.MaterialButton android:id="@+id/max2Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="2" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/max4Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/max6Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/max8Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="8" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max2Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="2" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max4Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max6Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/max8Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="8" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
@@ -133,9 +134,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/targetWinsLabel">
-            <com.google.android.material.button.MaterialButton android:id="@+id/wins1Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="1" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/wins3Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/wins5Button" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/wins1Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="1" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/wins3Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/wins5Button" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
@@ -162,10 +163,50 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/roundEndModeLabel">
-            <com.google.android.material.button.MaterialButton android:id="@+id/roundEndSprintButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/round_end_sprint" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/roundEndPodiumButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/round_end_podium" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/roundEndFullRankingButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/round_end_full_ranking" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/roundEndSprintButton" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/round_end_sprint" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/roundEndPodiumButton" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/round_end_podium" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/roundEndFullRankingButton" style="@style/Widget.GiocoDel15.SegmentButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/round_end_full_ranking" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/summaryCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_lg"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@drawable/bg_card_neutral"
+            android:padding="@dimen/space_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/roundEndModeGroup">
+
+            <TextView
+                android:id="@+id/summaryTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/create_table_summary_title"
+                android:textColor="@color/game_text_secondary"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="bold"
+                android:letterSpacing="@dimen/uppercase_letter_spacing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/configSummaryText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:textColor="@color/game_text_primary"
+                android:textSize="@dimen/text_body_secondary"
+                android:textStyle="bold"
+                tools:text="TAVOLO • 4×4 • 4 GIOCATORI • PRIMO A 3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/summaryTitle" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/continueButton"
@@ -180,7 +221,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/title"
-            app:layout_constraintTop_toBottomOf="@id/roundEndModeGroup" />
+            app:layout_constraintTop_toBottomOf="@id/summaryCard" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -30,7 +30,22 @@ class CreateTableActivity : AppCompatActivity() {
             if (oneVsOne) binding.maxPlayersGroup.check(R.id.max2Button)
             setGroupEnabled(binding.maxPlayersGroup, !oneVsOne)
             binding.maxPlayersLabel.isEnabled = !oneVsOne
+            refreshSummary()
         }
+
+        binding.gridSizeGroup.addOnButtonCheckedListener { _, _, isChecked ->
+            if (isChecked) refreshSummary()
+        }
+        binding.maxPlayersGroup.addOnButtonCheckedListener { _, _, isChecked ->
+            if (isChecked) refreshSummary()
+        }
+        binding.targetWinsGroup.addOnButtonCheckedListener { _, _, isChecked ->
+            if (isChecked) refreshSummary()
+        }
+        binding.roundEndModeGroup.addOnButtonCheckedListener { _, _, isChecked ->
+            if (isChecked) refreshSummary()
+        }
+        refreshSummary()
 
         binding.continueButton.setOnClickListener {
             val mode = selectedMode()
@@ -55,6 +70,25 @@ class CreateTableActivity : AppCompatActivity() {
         for (index in 0 until group.childCount) {
             group.getChildAt(index).isEnabled = enabled
         }
+    }
+
+    /** Updates the read-only configuration summary card to reflect the currently selected
+     * mode/grid/players/wins, so the player sees a plain-language recap before confirming. */
+    private fun refreshSummary() {
+        val mode = selectedMode()
+        val modeLabel = getString(
+            if (mode == TableMode.ONE_VS_ONE) R.string.mode_one_vs_one else R.string.mode_table
+        )
+        val maxPlayers = if (mode == TableMode.ONE_VS_ONE) 2 else selectedMaxPlayers()
+        val gridSize = selectedGridSize()
+        binding.configSummaryText.text = getString(
+            R.string.create_table_summary_body,
+            modeLabel,
+            gridSize,
+            gridSize,
+            maxPlayers,
+            selectedTargetWins()
+        )
     }
 
     private fun selectedMode(): TableMode = if (
