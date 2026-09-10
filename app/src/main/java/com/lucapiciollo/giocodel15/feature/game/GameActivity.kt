@@ -4,20 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.databinding.ActivityGameBinding
+import com.lucapiciollo.giocodel15.feature.home.HomeActivity
 import com.lucapiciollo.giocodel15.feature.result.ResultActivity
 import com.lucapiciollo.giocodel15.multiplayer.model.PlayerResult
 import com.lucapiciollo.giocodel15.multiplayer.nearby.DeviceIdentity
+import com.lucapiciollo.giocodel15.multiplayer.nearby.HostDisconnectDialog
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessageType
+import com.lucapiciollo.giocodel15.multiplayer.protocol.PlayerResultCodec
+import com.lucapiciollo.giocodel15.multiplayer.protocol.RoundRankingCodec
+import com.lucapiciollo.giocodel15.multiplayer.ranking.RankingCalculator
+import com.lucapiciollo.giocodel15.multiplayer.round.RoundResultManager
+import com.lucapiciollo.giocodel15.multiplayer.session.RoundState
 import com.lucapiciollo.giocodel15.multiplayer.session.TableSession
-import org.json.JSONArray
+import com.lucapiciollo.giocodel15.multiplayer.validation.ValidationResult
 import org.json.JSONObject
 import java.util.Locale
 
@@ -27,12 +35,29 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     private val viewModel: GameViewModel by viewModels()
     private lateinit var nearby: NearbyConnectionManager
     private val handler = Handler(Looper.getMainLooper())
-    private val results = linkedMapOf<String, PlayerResult>()
 
     private val isHost by lazy { intent.getBooleanExtra(EXTRA_IS_HOST, false) }
     private val tableId by lazy { intent.getStringExtra(EXTRA_TABLE_ID) ?: "local-table" }
     private val roundId by lazy { intent.getStringExtra(EXTRA_ROUND_ID) ?: "local-round" }
+    private val startAtMs by lazy { intent.getLongExtra(EXTRA_START_AT, System.currentTimeMillis()) }
     private val expectedPlayers by lazy { intent.getIntExtra(EXTRA_EXPECTED_PLAYERS, 1).coerceAtLeast(1) }
+
+    /** Host-only authority deciding validation/ranking/round-end. Null on client devices. */
+    private var roundResultManager: RoundResultManager? = null
+    private var roundFinalized = false
+    private var hostClosedHandled = false
+
+    private val timeoutChecker = object : Runnable {
+        override fun run() {
+            val manager = roundResultManager ?: return
+            if (roundFinalized) return
+            if (manager.isComplete()) {
+                finalizeRound(manager)
+            } else {
+                handler.postDelayed(this, TIMEOUT_CHECK_INTERVAL_MS)
+            }
+        }
+    }
 
     private val timerTick = object : Runnable {
         override fun run() {
@@ -56,6 +81,23 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         TableSession.isHost = isHost
         TableSession.gridSize = gridSize
         TableSession.expectedPlayers = expectedPlayers
+        TableSession.roundState = RoundState.PLAYING
+
+        if (isHost) {
+            val roster = TableSession.activeRoster().ifEmpty {
+                val self = DeviceIdentity.displayName(this)
+                listOf(self to self)
+            }
+            roundResultManager = RoundResultManager(
+                roundId = roundId,
+                gridSize = gridSize,
+                seed = seed,
+                startAtMs = startAtMs,
+                endMode = TableSession.roundEndMode,
+                players = roster
+            )
+            handler.postDelayed(timeoutChecker, TIMEOUT_CHECK_INTERVAL_MS)
+        }
 
         viewModel.initialize(gridSize, seed)
 
@@ -69,14 +111,24 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         viewModel.puzzleState?.let(binding.puzzleBoard::setPuzzleState)
         renderStats()
+        binding.gameStatus.text = getString(
+            R.string.game_players_racing,
+            roundResultManager?.totalPlayers ?: expectedPlayers
+        )
         handler.post(timerTick)
 
         binding.puzzleBoard.setOnStateChangedListener { state ->
             viewModel.updateState(state)
             renderStats()
         }
-
+        binding.puzzleBoard.setOnTileMovedListener { tileIndex -> viewModel.recordMove(tileIndex) }
         binding.puzzleBoard.setOnSolvedListener { onPuzzleSolved() }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isHost) closeTableAsHost() else finish()
+            }
+        })
     }
 
     override fun onResume() {
@@ -102,19 +154,23 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         val result = PlayerResult(
             playerId = identity,
             playerName = identity,
+            roundId = roundId,
             elapsedMs = elapsed,
-            moves = state.moves
+            moves = state.moves,
+            finishedAt = System.currentTimeMillis(),
+            boardHash = viewModel.initialBoardHash.orEmpty(),
+            moveSequence = viewModel.moveSequence
         )
 
         if (isHost) {
-            acceptResult(result)
+            handleIncomingResult(result)
         } else {
             nearby.broadcast(
                 GameMessage(
                     type = GameMessageType.PLAYER_FINISHED,
                     tableId = tableId,
                     roundId = roundId,
-                    payload = resultToJson(result).toString()
+                    payload = PlayerResultCodec.toJson(result).toString()
                 )
             )
             binding.gameStatus.setText(R.string.game_waiting_results)
@@ -122,25 +178,24 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
+        if (message.type == GameMessageType.HOST_CLOSED) {
+            if (!isHost) showHostClosedDialog()
+            return
+        }
         if (message.tableId != tableId || message.roundId != roundId) return
         when (message.type) {
             GameMessageType.PLAYER_FINISHED -> if (isHost) {
-                runCatching { resultFromJson(JSONObject(message.payload), endpointId) }
-                    .onSuccess(::acceptResult)
+                runCatching { PlayerResultCodec.fromJson(JSONObject(message.payload), endpointId) }
+                    .onSuccess(::handleIncomingResult)
             }
             GameMessageType.PLAYER_RESULT -> if (!isHost) {
                 runCatching {
                     val json = JSONObject(message.payload)
-                    val position = json.getInt("position")
-                    val name = json.getString("playerName")
-                    val finished = json.getInt("finished")
-                    val total = json.getInt("total")
                     binding.gameStatus.text = getString(
-                        R.string.game_live_finish,
-                        name,
-                        position,
-                        finished,
-                        total
+                        R.string.game_opponent_finished,
+                        json.getString("playerName"),
+                        json.getInt("finished"),
+                        json.getInt("total")
                     )
                 }
             }
@@ -149,15 +204,23 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         }
     }
 
-    private fun acceptResult(result: PlayerResult) {
-        if (results.containsKey(result.playerId)) return
-        if (result.elapsedMs <= 0L || result.moves <= 0) return
+    /** Host-only: validates and (if accepted) folds a result into the round, broadcasting a
+     * light "N/total finished" update without revealing anyone's time. */
+    private fun handleIncomingResult(result: PlayerResult) {
+        val manager = roundResultManager ?: return
+        if (roundFinalized) return
 
-        results[result.playerId] = result
-        val provisionalRanking = results.values.sortedWith(
-            compareBy<PlayerResult> { it.elapsedMs }.thenBy { it.moves }
-        )
-        val position = provisionalRanking.indexOfFirst { it.playerId == result.playerId } + 1
+        when (val outcome = manager.tryAccept(result)) {
+            is ValidationResult.Invalid -> {
+                onError(getString(R.string.game_status_playing) + ": " + outcome.reason)
+                return
+            }
+
+            ValidationResult.Valid -> Unit
+        }
+
+        val position = RankingCalculator.positionOf(manager.acceptedResults(), result.playerId)
+            ?: manager.finishedCount
 
         nearby.broadcast(
             GameMessage(
@@ -167,35 +230,42 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
                 payload = JSONObject()
                     .put("playerName", result.playerName)
                     .put("position", position)
-                    .put("finished", results.size)
-                    .put("total", expectedPlayers)
+                    .put("finished", manager.finishedCount)
+                    .put("total", manager.totalPlayers)
                     .toString()
             )
         )
 
-        binding.gameStatus.text = getString(R.string.game_finished_count, results.size, expectedPlayers)
+        binding.gameStatus.text = getString(
+            R.string.game_finished_count,
+            manager.finishedCount,
+            manager.totalPlayers
+        )
 
-        if (results.size >= expectedPlayers) {
-            val ranking = results.values.sortedWith(
-                compareBy<PlayerResult> { it.elapsedMs }.thenBy { it.moves }
-            )
-            val json = rankingToJson(ranking)
+        if (manager.isComplete()) finalizeRound(manager)
+    }
 
-            nearby.broadcast(
-                GameMessage(
-                    type = GameMessageType.ROUND_RESULT,
-                    tableId = tableId,
-                    roundId = roundId,
-                    payload = json
-                )
+    private fun finalizeRound(manager: RoundResultManager) {
+        if (roundFinalized) return
+        roundFinalized = true
+        val ranking = manager.buildFinalRanking()
+        val json = RoundRankingCodec.toJson(ranking)
+
+        nearby.broadcast(
+            GameMessage(
+                type = GameMessageType.ROUND_RESULT,
+                tableId = tableId,
+                roundId = roundId,
+                payload = json
             )
-            openResults(json)
-        }
+        )
+        openResults(json)
     }
 
     private fun openResults(rankingJson: String) {
-        val ranking = rankingFromJson(rankingJson)
-        TableSession.applyRound(ranking)
+        val entries = RoundRankingCodec.fromJson(rankingJson)
+        TableSession.applyRound(entries.mapNotNull { it.result })
+        TableSession.roundState = RoundState.RESULTS
 
         startActivity(Intent(this, ResultActivity::class.java).apply {
             putExtra(ResultActivity.EXTRA_RANKING_JSON, rankingJson)
@@ -204,46 +274,47 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         finish()
     }
 
-    override fun onDisconnected(endpointId: String) = Unit
+    override fun onDisconnected(endpointId: String) {
+        if (isHost) {
+            val playerId = TableSession.unbindEndpoint(endpointId) ?: return
+            val manager = roundResultManager ?: return
+            manager.markDisconnected(playerId)
+            if (manager.isComplete()) finalizeRound(manager)
+        } else {
+            showHostClosedDialog()
+        }
+    }
 
     override fun onError(message: String) {
         binding.gameStatus.text = message
+    }
+
+    private fun showHostClosedDialog() {
+        if (hostClosedHandled) return
+        hostClosedHandled = true
+        HostDisconnectDialog.show(this, nearby) { goHome() }
+    }
+
+    private fun closeTableAsHost() {
+        nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = tableId, roundId = roundId))
+        nearby.disconnectAll()
+        TableSession.clear()
+        goHome()
+    }
+
+    private fun goHome() {
+        startActivity(
+            Intent(this, HomeActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+        finish()
     }
 
     private fun renderStats() {
         val state = viewModel.puzzleState ?: return
         binding.movesValue.text = state.moves.toString()
         binding.gridValue.text = getString(R.string.game_grid_value, state.size, state.size)
-        binding.gameStatus.setText(
-            if (state.isSolved) R.string.game_status_completed else R.string.game_status_playing
-        )
     }
-
-    private fun rankingToJson(ranking: List<PlayerResult>): String = JSONArray().apply {
-        ranking.forEach { put(resultToJson(it)) }
-    }.toString()
-
-    private fun rankingFromJson(json: String): List<PlayerResult> {
-        val array = JSONArray(json)
-        return buildList {
-            for (index in 0 until array.length()) {
-                add(resultFromJson(array.getJSONObject(index), "player-$index"))
-            }
-        }
-    }
-
-    private fun resultToJson(result: PlayerResult) = JSONObject()
-        .put("playerId", result.playerId)
-        .put("playerName", result.playerName)
-        .put("elapsedMs", result.elapsedMs)
-        .put("moves", result.moves)
-
-    private fun resultFromJson(json: JSONObject, fallbackId: String) = PlayerResult(
-        playerId = json.optString("playerId", fallbackId),
-        playerName = json.optString("playerName", fallbackId),
-        elapsedMs = json.getLong("elapsedMs"),
-        moves = json.getInt("moves")
-    )
 
     private fun formatElapsed(elapsedMs: Long): String {
         val minutes = elapsedMs / 60_000
@@ -263,8 +334,10 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         const val EXTRA_IS_HOST = "extra_is_host"
         const val EXTRA_TABLE_ID = "extra_table_id"
         const val EXTRA_ROUND_ID = "extra_round_id"
+        const val EXTRA_START_AT = "extra_start_at"
         const val EXTRA_EXPECTED_PLAYERS = "extra_expected_players"
         private const val DEFAULT_GRID_SIZE = 4
         private const val TIMER_REFRESH_MS = 50L
+        private const val TIMEOUT_CHECK_INTERVAL_MS = 2_000L
     }
 }

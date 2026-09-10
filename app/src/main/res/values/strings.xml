@@ -46,4 +46,24 @@
     <string name="nearby_connect">ENTRA</string>
     <string name="nearby_permission_denied">Permessi Nearby necessari per giocare nelle vicinanze.</string>
     <string name="nearby_error">Errore Nearby</string>
+
+    <string name="round_end_mode">Fine manche</string>
+    <string name="round_end_sprint">SPRINT</string>
+    <string name="round_end_podium">PODIO</string>
+    <string name="round_end_full_ranking">CLASSIFICA COMPLETA</string>
+
+    <string name="lobby_players_count">%1$d/%2$d giocatori</string>
+    <string name="countdown_go">VIA!</string>
+    <string name="countdown_seconds">%1$d</string>
+
+    <string name="game_players_racing">%1$d giocatori in gara</string>
+    <string name="game_opponent_finished">%1$s ha terminato · arrivati %2$d/%3$d</string>
+
+    <string name="result_status_dnf">DNF</string>
+    <string name="result_status_disconnected">Disconnesso</string>
+    <string name="result_new_table">NUOVO TAVOLO</string>
+
+    <string name="host_closed_title">Tavolo chiuso</string>
+    <string name="host_closed_message">Il tavolo è stato chiuso perché l\'host si è disconnesso.</string>
+    <string name="host_closed_return_home">TORNA ALLA HOME</string>
 </resources>

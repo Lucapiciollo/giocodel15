@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -14,23 +15,32 @@ import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityLobbyBinding
 import com.lucapiciollo.giocodel15.databinding.ItemPlayerBinding
 import com.lucapiciollo.giocodel15.feature.game.GameActivity
+import com.lucapiciollo.giocodel15.feature.home.HomeActivity
+import com.lucapiciollo.giocodel15.multiplayer.model.RoundEndMode
 import com.lucapiciollo.giocodel15.multiplayer.model.TableMode
 import com.lucapiciollo.giocodel15.multiplayer.nearby.DeviceIdentity
+import com.lucapiciollo.giocodel15.multiplayer.nearby.HostDisconnectDialog
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyPermissions
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessageType
+import com.lucapiciollo.giocodel15.multiplayer.protocol.LobbyPlayerInfo
+import com.lucapiciollo.giocodel15.multiplayer.protocol.LobbyRosterCodec
+import com.lucapiciollo.giocodel15.multiplayer.session.RoundStartScheduler
+import com.lucapiciollo.giocodel15.multiplayer.session.RoundState
 import com.lucapiciollo.giocodel15.multiplayer.session.TableSession
 import org.json.JSONObject
+import java.util.UUID
 
 class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private lateinit var binding: ActivityLobbyBinding
     private lateinit var nearby: NearbyConnectionManager
-    private val endpointNames = linkedMapOf<String, String>()
     private val playerRows = linkedMapOf<String, ItemPlayerBinding>()
     private val handler = Handler(Looper.getMainLooper())
+    private val startScheduler = RoundStartScheduler(handler)
+    private var hostClosedHandled = false
 
     private val isHost by lazy { intent.getBooleanExtra(EXTRA_IS_HOST, false) }
     private val gridSize by lazy { intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE) }
@@ -46,6 +56,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
     private val targetWins by lazy {
         intent.getIntExtra(EXTRA_TARGET_WINS, DEFAULT_TARGET_WINS).let { if (it in VALID_TARGET_WINS) it else DEFAULT_TARGET_WINS }
+    }
+    private val roundEndMode by lazy {
+        runCatching {
+            RoundEndMode.valueOf(intent.getStringExtra(EXTRA_ROUND_END_MODE) ?: RoundEndMode.FULL_RANKING.name)
+        }.getOrDefault(RoundEndMode.FULL_RANKING)
     }
 
     private val permissionLauncher = registerForActivityResult(
@@ -70,9 +85,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             TableSession.tableMode = tableMode
             TableSession.maxPlayers = maxPlayers
             TableSession.targetWins = targetWins
+            TableSession.roundEndMode = roundEndMode
         } else {
             TableSession.isHost = false
         }
+        TableSession.roundState = RoundState.WAITING
 
         binding.startGameButton.isVisible = isHost
         binding.startGameButton.setOnClickListener { startRoundAsHost() }
@@ -81,11 +98,17 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         TableSession.registerPlayer(selfName, selfName)
 
         if (isHost) {
-            addPlayer("host", selfName, true)
+            addPlayer(selfName, selfName, true)
             requestPermissionsAndAdvertise()
         } else {
             binding.lobbySubtitle.text = getString(R.string.lobby_waiting)
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isHost) closeTableAsHost() else finish()
+            }
+        })
     }
 
     override fun onResume() {
@@ -94,35 +117,56 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onConnectionInitiated(endpointId: String, endpointName: String) {
-        endpointNames[endpointId] = endpointName
+        TableSession.bindEndpoint(endpointId, endpointName)
     }
 
     override fun onConnected(endpointId: String) {
         if (!isHost) return
-        if (playerRows.size >= TableSession.maxPlayers) {
+        if (TableSession.activeRoster().size >= TableSession.maxPlayers) {
             nearby.disconnect(endpointId)
             Toast.makeText(this, R.string.lobby_table_full, Toast.LENGTH_SHORT).show()
             return
         }
 
-        val name = endpointNames[endpointId] ?: endpointId
-        addPlayer(endpointId, name, false)
-        TableSession.registerPlayer(endpointId, name)
+        val playerId = TableSession.playerIdForEndpoint(endpointId) ?: endpointId
+        TableSession.registerPlayer(playerId, playerId)
+        addPlayer(playerId, playerId, false)
+        broadcastLobbyState()
     }
 
     override fun onDisconnected(endpointId: String) {
-        playerRows.remove(endpointId)?.let { binding.playersContainer.removeView(it.root) }
+        if (isHost) {
+            val playerId = TableSession.unbindEndpoint(endpointId)
+            if (playerId != null) {
+                TableSession.removePlayer(playerId)
+                playerRows.remove(playerId)?.let { binding.playersContainer.removeView(it.root) }
+            }
+            broadcastLobbyState()
+        } else {
+            showHostClosedDialog()
+        }
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
         if (message.version != GameMessage.CURRENT_VERSION) return
-        if (message.type != GameMessageType.START_GAME || isHost) return
 
+        when (message.type) {
+            GameMessageType.HOST_CLOSED -> if (!isHost) showHostClosedDialog()
+
+            GameMessageType.LOBBY_STATE -> if (!isHost) renderRoster(message.payload)
+
+            GameMessageType.START_GAME -> if (!isHost) handleStartGame(message)
+
+            else -> Unit
+        }
+    }
+
+    private fun handleStartGame(message: GameMessage) {
         runCatching {
             val payload = JSONObject(message.payload)
             val size = payload.getInt("gridSize")
             val seed = payload.getLong("seed")
-            val delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
+            val startAt = payload.getLong("startAt")
             val expectedPlayers = payload.optInt("expectedPlayers", 2).coerceAtLeast(1)
             val receivedMaxPlayers = payload.optInt("maxPlayers", expectedPlayers).coerceIn(2, MAX_SUPPORTED_PLAYERS)
             val receivedTargetWins = payload.optInt("targetWins", DEFAULT_TARGET_WINS).let {
@@ -131,6 +175,9 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             val receivedMode = runCatching {
                 TableMode.valueOf(payload.optString("tableMode", TableMode.TABLE.name))
             }.getOrDefault(TableMode.TABLE)
+            val receivedRoundEndMode = runCatching {
+                RoundEndMode.valueOf(payload.optString("roundEndMode", RoundEndMode.FULL_RANKING.name))
+            }.getOrDefault(RoundEndMode.FULL_RANKING)
 
             TableSession.tableId = message.tableId
             TableSession.gridSize = size
@@ -138,9 +185,10 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             TableSession.maxPlayers = receivedMaxPlayers
             TableSession.targetWins = receivedTargetWins
             TableSession.tableMode = receivedMode
+            TableSession.roundEndMode = receivedRoundEndMode
 
             val roundId = message.roundId ?: seed.toString()
-            scheduleGameStart(size, seed, delayMs, roundId, expectedPlayers, message.tableId)
+            scheduleGameStart(size, seed, startAt, roundId, expectedPlayers, message.tableId)
         }.onFailure {
             onError(it.message ?: "Configurazione partita non valida")
         }
@@ -165,18 +213,20 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private fun startRoundAsHost() {
         val seed = System.currentTimeMillis()
-        val roundId = seed.toString()
-        val expectedPlayers = playerRows.size.coerceAtLeast(1)
+        val roundId = UUID.randomUUID().toString()
+        val startAt = System.currentTimeMillis() + START_DELAY_MS
+        val expectedPlayers = TableSession.activeRoster().size.coerceAtLeast(1)
         TableSession.expectedPlayers = expectedPlayers
 
         val payload = JSONObject()
             .put("gridSize", gridSize)
             .put("seed", seed)
-            .put("startDelayMs", START_DELAY_MS)
+            .put("startAt", startAt)
             .put("expectedPlayers", expectedPlayers)
             .put("maxPlayers", TableSession.maxPlayers)
             .put("targetWins", TableSession.targetWins)
             .put("tableMode", TableSession.tableMode.name)
+            .put("roundEndMode", TableSession.roundEndMode.name)
             .toString()
 
         nearby.broadcast(
@@ -189,32 +239,68 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         )
         nearby.stopAdvertising()
         binding.startGameButton.isEnabled = false
-        scheduleGameStart(gridSize, seed, START_DELAY_MS, roundId, expectedPlayers, TableSession.tableId)
+        scheduleGameStart(gridSize, seed, startAt, roundId, expectedPlayers, TableSession.tableId)
     }
 
     private fun scheduleGameStart(
         size: Int,
         seed: Long,
-        delayMs: Long,
+        startAt: Long,
         roundId: String,
         expectedPlayers: Int,
         resolvedTableId: String
     ) {
         TableSession.gridSize = size
         TableSession.expectedPlayers = expectedPlayers
-        binding.lobbySubtitle.text = "3 · 2 · 1 · VIA"
-        handler.postDelayed({
-            startActivity(
-                Intent(this, GameActivity::class.java).apply {
-                    putExtra(GameActivity.EXTRA_GRID_SIZE, size)
-                    putExtra(GameActivity.EXTRA_SEED, seed)
-                    putExtra(GameActivity.EXTRA_IS_HOST, isHost)
-                    putExtra(GameActivity.EXTRA_TABLE_ID, resolvedTableId)
-                    putExtra(GameActivity.EXTRA_ROUND_ID, roundId)
-                    putExtra(GameActivity.EXTRA_EXPECTED_PLAYERS, expectedPlayers)
-                }
+        TableSession.roundState = RoundState.COUNTDOWN
+
+        startScheduler.schedule(
+            startAtMs = startAt,
+            onTick = { secondsLeft -> binding.lobbySubtitle.text = getString(R.string.countdown_seconds, secondsLeft) },
+            onStart = {
+                binding.lobbySubtitle.text = getString(R.string.countdown_go)
+                startActivity(
+                    Intent(this, GameActivity::class.java).apply {
+                        putExtra(GameActivity.EXTRA_GRID_SIZE, size)
+                        putExtra(GameActivity.EXTRA_SEED, seed)
+                        putExtra(GameActivity.EXTRA_IS_HOST, isHost)
+                        putExtra(GameActivity.EXTRA_TABLE_ID, resolvedTableId)
+                        putExtra(GameActivity.EXTRA_ROUND_ID, roundId)
+                        putExtra(GameActivity.EXTRA_START_AT, startAt)
+                        putExtra(GameActivity.EXTRA_EXPECTED_PLAYERS, expectedPlayers)
+                    }
+                )
+                finish()
+            }
+        )
+    }
+
+    private fun broadcastLobbyState() {
+        if (!isHost) return
+        val roster = TableSession.activeRoster().map { (id, name) ->
+            LobbyPlayerInfo(id, name, id == DeviceIdentity.displayName(this))
+        }
+        TableSession.expectedPlayers = roster.size
+        nearby.broadcast(
+            GameMessage(
+                type = GameMessageType.LOBBY_STATE,
+                tableId = TableSession.tableId,
+                payload = LobbyRosterCodec.toJson(roster)
             )
-        }, delayMs.coerceAtLeast(0L))
+        )
+        binding.lobbySubtitle.text = getString(R.string.lobby_players_count, roster.size, TableSession.maxPlayers)
+    }
+
+    private fun renderRoster(payload: String) {
+        val roster = runCatching { LobbyRosterCodec.fromJson(payload) }.getOrNull() ?: return
+        playerRows.values.forEach { binding.playersContainer.removeView(it.root) }
+        playerRows.clear()
+        roster.forEach { player ->
+            TableSession.registerPlayer(player.playerId, player.playerName)
+            addPlayer(player.playerId, player.playerName, player.isHost)
+        }
+        TableSession.expectedPlayers = roster.size
+        binding.lobbySubtitle.text = getString(R.string.lobby_players_count, roster.size, TableSession.maxPlayers)
     }
 
     private fun addPlayer(id: String, name: String, host: Boolean) {
@@ -226,7 +312,29 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.playersContainer.addView(row.root)
     }
 
+    private fun showHostClosedDialog() {
+        if (hostClosedHandled) return
+        hostClosedHandled = true
+        HostDisconnectDialog.show(this, nearby) { goHome() }
+    }
+
+    private fun closeTableAsHost() {
+        nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = TableSession.tableId))
+        nearby.disconnectAll()
+        TableSession.clear()
+        goHome()
+    }
+
+    private fun goHome() {
+        startActivity(
+            Intent(this, HomeActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+        finish()
+    }
+
     override fun onDestroy() {
+        startScheduler.cancel()
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
@@ -239,6 +347,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         const val EXTRA_TABLE_MODE = "extra_table_mode"
         const val EXTRA_MAX_PLAYERS = "extra_max_players"
         const val EXTRA_TARGET_WINS = "extra_target_wins"
+        const val EXTRA_ROUND_END_MODE = "extra_round_end_mode"
         private const val DEFAULT_GRID_SIZE = 4
         private const val DEFAULT_TABLE_ID = "local-table"
         private const val DEFAULT_MAX_PLAYERS = 4

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.databinding.ActivityCreateTableBinding
 import com.lucapiciollo.giocodel15.feature.lobby.LobbyActivity
+import com.lucapiciollo.giocodel15.multiplayer.model.RoundEndMode
 import com.lucapiciollo.giocodel15.multiplayer.model.TableMode
 import java.util.UUID
 
@@ -38,6 +39,7 @@ class CreateTableActivity : AppCompatActivity() {
                     putExtra(LobbyActivity.EXTRA_TABLE_MODE, mode.name)
                     putExtra(LobbyActivity.EXTRA_MAX_PLAYERS, maxPlayers)
                     putExtra(LobbyActivity.EXTRA_TARGET_WINS, selectedTargetWins())
+                    putExtra(LobbyActivity.EXTRA_ROUND_END_MODE, selectedRoundEndMode().name)
                 }
             )
         }
@@ -73,6 +75,12 @@ class CreateTableActivity : AppCompatActivity() {
         R.id.wins1Button -> 1
         R.id.wins5Button -> 5
         else -> 3
+    }
+
+    private fun selectedRoundEndMode(): RoundEndMode = when (binding.roundEndModeGroup.checkedButtonId) {
+        R.id.roundEndSprintButton -> RoundEndMode.SPRINT
+        R.id.roundEndPodiumButton -> RoundEndMode.PODIUM
+        else -> RoundEndMode.FULL_RANKING
     }
 
     companion object {
