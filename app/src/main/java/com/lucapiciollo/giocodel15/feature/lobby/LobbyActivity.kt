@@ -20,6 +20,7 @@ import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyPermissions
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessageType
+import com.lucapiciollo.giocodel15.multiplayer.session.TableSession
 import org.json.JSONObject
 
 class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
@@ -49,11 +50,18 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         nearby = NearbySession.manager(this)
         nearby.listener = this
 
+        TableSession.tableId = tableId
+        TableSession.isHost = isHost
+        TableSession.gridSize = gridSize
+
         binding.startGameButton.isVisible = isHost
         binding.startGameButton.setOnClickListener { startRoundAsHost() }
 
+        val selfName = DeviceIdentity.displayName(this)
+        TableSession.registerPlayer(selfName, selfName)
+
         if (isHost) {
-            addPlayer("host", DeviceIdentity.displayName(this), true)
+            addPlayer("host", selfName, true)
             requestPermissionsAndAdvertise()
         } else {
             binding.lobbySubtitle.text = getString(R.string.lobby_waiting)
@@ -70,7 +78,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onConnected(endpointId: String) {
-        if (isHost) addPlayer(endpointId, endpointNames[endpointId] ?: endpointId, false)
+        if (isHost) {
+            val name = endpointNames[endpointId] ?: endpointId
+            addPlayer(endpointId, name, false)
+            TableSession.registerPlayer(endpointId, name)
+        }
     }
 
     override fun onDisconnected(endpointId: String) {
@@ -87,6 +99,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             val seed = payload.getLong("seed")
             val delayMs = payload.optLong("startDelayMs", START_DELAY_MS)
             val expectedPlayers = payload.optInt("expectedPlayers", 2).coerceAtLeast(1)
+            TableSession.expectedPlayers = expectedPlayers
             scheduleGameStart(size, seed, delayMs, message.roundId, expectedPlayers)
         }.onFailure {
             onError(it.message ?: "Configurazione partita non valida")
@@ -114,6 +127,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         val seed = System.currentTimeMillis()
         val roundId = seed.toString()
         val expectedPlayers = playerRows.size.coerceAtLeast(1)
+        TableSession.expectedPlayers = expectedPlayers
+
         val payload = JSONObject()
             .put("gridSize", gridSize)
             .put("seed", seed)
@@ -141,6 +156,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         roundId: String,
         expectedPlayers: Int
     ) {
+        TableSession.gridSize = size
+        TableSession.expectedPlayers = expectedPlayers
         binding.lobbySubtitle.text = "3 · 2 · 1 · VIA"
         handler.postDelayed({
             startActivity(
