@@ -11,4 +11,5 @@
     <string name="difficulty_hard">Difficile</string>
     <string name="difficulty_expert">Esperto</string>
     <string name="continue_label">CONTINUA</string>
+    <string name="puzzle_board_content_description">Griglia del Gioco del 15</string>
 </resources>
