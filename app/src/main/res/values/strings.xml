@@ -6,6 +6,11 @@
     <string name="join_table">ENTRA NEL TAVOLO</string>
     <string name="create_table_title">Crea tavolo</string>
     <string name="grid_size">Dimensione griglia</string>
+    <string name="table_mode">Modalità</string>
+    <string name="mode_one_vs_one">1 VS 1</string>
+    <string name="mode_table">TAVOLO</string>
+    <string name="max_players">Giocatori massimi</string>
+    <string name="target_wins">Vittorie per vincere</string>
     <string name="difficulty_easy">Facile</string>
     <string name="difficulty_classic">Classico</string>
     <string name="difficulty_hard">Difficile</string>
@@ -33,6 +38,7 @@
     <string name="lobby_title">Lobby</string>
     <string name="lobby_waiting">In attesa di giocatori…</string>
     <string name="lobby_players">Giocatori connessi</string>
+    <string name="lobby_table_full">Tavolo pieno</string>
     <string name="start_game">AVVIA PARTITA</string>
     <string name="nearby_title">Tavoli nelle vicinanze</string>
     <string name="nearby_searching">Ricerca tavoli Nearby…</string>
