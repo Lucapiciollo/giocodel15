@@ -4,19 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_home_activity"
-    android:padding="@dimen/space_lg">
+    android:padding="@dimen/screen_padding_compact">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/homeLandColumnGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/land_header_width" />
+
+    <!-- Settings entry: circular icon button, top-right of the whole screen. -->
+    <ImageView
+        android:id="@+id/settingsEntry"
+        android:layout_width="@dimen/touch_target_min"
+        android:layout_height="@dimen/touch_target_min"
+        android:background="@drawable/bg_icon_circle"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:padding="@dimen/space_12"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="@string/cd_settings"
+        app:tint="@color/game_cyan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Left column: logo + tagline, vertically centered. -->
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/app_name"
         android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/title_size"
+        android:textSize="@dimen/screen_title"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/tagline"
-        app:layout_constraintEnd_toStartOf="@id/createTableButton"
+        app:layout_constraintEnd_toStartOf="@id/homeLandColumnGuide"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -25,73 +49,243 @@
         android:id="@+id/tagline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_sm"
-        android:letterSpacing="0.08"
+        android:layout_marginTop="@dimen/space_8"
+        android:letterSpacing="@dimen/uppercase_letter_spacing"
         android:text="@string/home_tagline"
         android:textColor="@color/game_text_secondary"
-        android:textSize="@dimen/caption_size"
+        android:textSize="@dimen/text_caption"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/title"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-    <com.google.android.material.button.MaterialButton
+    <!-- ============== Card: Crea Tavolo (green) ============== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/createTableButton"
-        style="@style/Widget.GiocoDel15.PrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_xl"
-        android:text="@string/create_table"
-        android:textColor="@color/game_text_primary"
-        app:backgroundTint="@color/game_primary"
-        app:layout_constraintBottom_toTopOf="@id/joinTableButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/joinTableButton"
-        style="@style/Widget.GiocoDel15.SecondaryButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_xl"
-        android:layout_marginTop="@dimen/space_md"
-        android:text="@string/join_table"
-        android:textColor="@color/game_text_primary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/createTableButton" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/soloPlayButton"
-        style="@style/Widget.GiocoDel15.OutlineButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_xl"
-        android:layout_marginTop="@dimen/space_md"
-        android:text="@string/solo_play"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/joinTableButton" />
-
-    <TextView
-        android:id="@+id/settingsEntry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_xl"
-        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginStart="@dimen/space_24"
+        android:layout_marginTop="@dimen/space_12"
+        android:background="@drawable/bg_card_green"
         android:clickable="true"
         android:focusable="true"
-        android:minWidth="@dimen/touch_target_min"
-        android:minHeight="@dimen/touch_target_min"
-        android:gravity="center"
-        android:text="@string/settings_entry"
-        android:textColor="@color/game_text_secondary"
-        android:textSize="@dimen/caption_size"
-        android:textStyle="bold"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="@dimen/space_12"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/soloPlayButton" />
+        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
+        app:layout_constraintTop_toBottomOf="@id/settingsEntry">
+
+        <FrameLayout
+            android:id="@+id/createTableIconContainer"
+            android:layout_width="@dimen/icon_40"
+            android:layout_height="@dimen/icon_40"
+            android:background="@drawable/bg_icon_square_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/icon_20"
+                android:layout_height="@dimen/icon_20"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/createTableTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="@string/create_table"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/createTableHelper"
+            app:layout_constraintEnd_toStartOf="@id/createTableChevron"
+            app:layout_constraintStart_toEndOf="@id/createTableIconContainer"
+            app:layout_constraintTop_toTopOf="@id/createTableIconContainer"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/createTableHelper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:text="@string/home_card_create_helper"
+            android:textColor="@color/game_text_secondary"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintBottom_toBottomOf="@id/createTableIconContainer"
+            app:layout_constraintEnd_toStartOf="@id/createTableChevron"
+            app:layout_constraintStart_toEndOf="@id/createTableIconContainer"
+            app:layout_constraintTop_toBottomOf="@id/createTableTitle" />
+
+        <ImageView
+            android:id="@+id/createTableChevron"
+            android:layout_width="@dimen/icon_20"
+            android:layout_height="@dimen/icon_20"
+            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@null"
+            app:tint="@color/game_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ============== Card: Entra nel Tavolo (blue/cyan) ============== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/joinTableButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_24"
+        android:layout_marginTop="@dimen/space_8"
+        android:background="@drawable/bg_card_blue"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="@dimen/space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
+        app:layout_constraintTop_toBottomOf="@id/createTableButton">
+
+        <FrameLayout
+            android:id="@+id/joinTableIconContainer"
+            android:layout_width="@dimen/icon_40"
+            android:layout_height="@dimen/icon_40"
+            android:background="@drawable/bg_icon_square_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/icon_20"
+                android:layout_height="@dimen/icon_20"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_groups"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/joinTableTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="@string/join_table"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/joinTableHelper"
+            app:layout_constraintEnd_toStartOf="@id/joinTableChevron"
+            app:layout_constraintStart_toEndOf="@id/joinTableIconContainer"
+            app:layout_constraintTop_toTopOf="@id/joinTableIconContainer"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/joinTableHelper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:text="@string/home_card_join_helper"
+            android:textColor="@color/game_text_secondary"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintBottom_toBottomOf="@id/joinTableIconContainer"
+            app:layout_constraintEnd_toStartOf="@id/joinTableChevron"
+            app:layout_constraintStart_toEndOf="@id/joinTableIconContainer"
+            app:layout_constraintTop_toBottomOf="@id/joinTableTitle" />
+
+        <ImageView
+            android:id="@+id/joinTableChevron"
+            android:layout_width="@dimen/icon_20"
+            android:layout_height="@dimen/icon_20"
+            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@null"
+            app:tint="@color/game_cyan"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ============== Card: Gioca da Solo (gold) ============== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/soloPlayButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_24"
+        android:layout_marginTop="@dimen/space_8"
+        android:background="@drawable/bg_card_gold"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="@dimen/space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
+        app:layout_constraintTop_toBottomOf="@id/joinTableButton">
+
+        <FrameLayout
+            android:id="@+id/soloPlayIconContainer"
+            android:layout_width="@dimen/icon_40"
+            android:layout_height="@dimen/icon_40"
+            android:background="@drawable/bg_icon_square_gold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/icon_20"
+                android:layout_height="@dimen/icon_20"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_person"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/soloPlayTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="@string/solo_play"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/soloPlayHelper"
+            app:layout_constraintEnd_toStartOf="@id/soloPlayChevron"
+            app:layout_constraintStart_toEndOf="@id/soloPlayIconContainer"
+            app:layout_constraintTop_toTopOf="@id/soloPlayIconContainer"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/soloPlayHelper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:text="@string/home_card_solo_helper"
+            android:textColor="@color/game_text_secondary"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintBottom_toBottomOf="@id/soloPlayIconContainer"
+            app:layout_constraintEnd_toStartOf="@id/soloPlayChevron"
+            app:layout_constraintStart_toEndOf="@id/soloPlayIconContainer"
+            app:layout_constraintTop_toBottomOf="@id/soloPlayTitle" />
+
+        <ImageView
+            android:id="@+id/soloPlayChevron"
+            android:layout_width="@dimen/icon_20"
+            android:layout_height="@dimen/icon_20"
+            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="@null"
+            app:tint="@color/game_gold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
