@@ -1,19 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="game_background">#091522</color>
-    <color name="game_surface">#102233</color>
-    <color name="game_surface_alt">#163047</color>
-    <color name="game_primary">#25C76F</color>
-    <color name="game_secondary">#169BFF</color>
-    <color name="game_text_primary">#F4F7FA</color>
-    <color name="game_text_secondary">#9FB4C5</color>
-    <color name="game_tile">#EAA45B</color>
-    <color name="game_tile_dark">#D98A3C</color>
-    <color name="game_tile_shadow">#8C5B22</color>
-    <color name="game_tile_text">#2B180D</color>
+    <!-- ============================================================
+         DESIGN TOKENS — Premium Gamer / Neo Arcade / Dark Puzzle
+         Source of truth for the whole app's palette.
+         ============================================================ -->
 
+    <!-- Backgrounds -->
+    <color name="game_bg_primary">#06131F</color>
+    <color name="game_bg_secondary">#081A28</color>
+
+    <!-- Surfaces -->
+    <color name="game_surface">#0B2232</color>
+    <color name="game_surface_alt">#0F2A3D</color>
+    <color name="game_surface_high">#16364B</color>
+
+    <!-- Green (primary action / success) -->
+    <color name="game_green">#00E676</color>
+    <color name="game_green_dark">#00A856</color>
+    <color name="game_green_light">#31F58D</color>
+
+    <!-- Cyan (secondary action / info) -->
+    <color name="game_cyan">#00BFFF</color>
+    <color name="game_cyan_dark">#007FC0</color>
+    <color name="game_cyan_light">#4BDDFF</color>
+
+    <!-- Gold (premium / rewards / tiles) -->
+    <color name="game_gold">#FFC107</color>
+    <color name="game_gold_light">#FFD76B</color>
+    <color name="game_gold_dark">#D98B21</color>
+
+    <!-- Red (errors / destructive) -->
+    <color name="game_red">#FF5252</color>
+    <color name="game_red_dark">#A83232</color>
+
+    <!-- Text -->
+    <color name="game_text_primary">#FFFFFF</color>
+    <color name="game_text_secondary">#A9B6C9</color>
+    <color name="game_text_muted">#6F8799</color>
+
+    <!-- Outlines -->
+    <color name="game_outline">#1D506A</color>
+    <color name="game_outline_strong">#2C7C9E</color>
+
+    <!-- Puzzle tile -->
+    <color name="game_tile_top">#FFD078</color>
+    <color name="game_tile_bottom">#E99B39</color>
+    <color name="game_tile_text">#261703</color>
+    <color name="game_tile_stroke">#FFE3A3</color>
+    <color name="game_tile_shadow">#66321F05</color>
+    <color name="game_empty_cell_bg">#071723</color>
+
+    <color name="game_transparent">#00000000</color>
+
+    <!-- Card surfaces (semi-transparent fill + solid stroke color) -->
+    <color name="card_green_fill">#1600E676</color>
+    <color name="card_blue_fill">#1600BFFF</color>
+    <color name="card_gold_fill">#18FFC107</color>
+    <color name="card_neutral_fill">#E60B2232</color>
+    <color name="card_error_fill">#18FF5252</color>
+
+    <!-- Icon containers (slightly stronger fill than card, same hue) -->
+    <color name="icon_container_green_fill">#2000E676</color>
+    <color name="icon_container_blue_fill">#2000BFFF</color>
+    <color name="icon_container_gold_fill">#20FFC107</color>
+    <color name="icon_container_neutral_fill">#1000BFFF</color>
+
+    <!-- Segment selector (Create Table / Solo Setup choices) -->
+    <color name="segment_unselected_fill">#0B2232</color>
+    <color name="segment_selected_fill">#1800E676</color>
+
+    <!-- Switch (Settings) -->
+    <color name="switch_track_on">#00E676</color>
+    <color name="switch_track_off">#344B5A</color>
+    <color name="switch_thumb_on">#FFFFFF</color>
+    <color name="switch_thumb_off">#A9B6C9</color>
+
+    <!-- Aurora background blobs (splash + legacy bg_aurora) -->
     <color name="aurora_green">#6625C76F</color>
     <color name="aurora_green_end">#0025C76F</color>
     <color name="aurora_blue">#66169BFF</color>
     <color name="aurora_blue_end">#00169BFF</color>
+
+    <!-- ============================================================
+         LEGACY NAMES — kept as aliases so every screen not yet
+         migrated to the new explicit tokens still renders with the
+         new premium palette automatically. Safe to remove once every
+         layout references the tokens above directly (tracked in the
+         redesign TODO list).
+         ============================================================ -->
+    <color name="game_background">@color/game_bg_primary</color>
+    <color name="game_primary">@color/game_green</color>
+    <color name="game_secondary">@color/game_cyan</color>
+    <color name="game_tile">@color/game_tile_top</color>
+    <color name="game_tile_dark">@color/game_tile_bottom</color>
 </resources>

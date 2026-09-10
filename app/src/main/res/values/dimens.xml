@@ -1,5 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ============================================================
+         DESIGN TOKENS — spacing / radius / typography scale
+         ============================================================ -->
+
+    <!-- Spacing scale -->
+    <dimen name="space_4">4dp</dimen>
+    <dimen name="space_8">8dp</dimen>
+    <dimen name="space_12">12dp</dimen>
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_20">20dp</dimen>
+    <dimen name="space_24">24dp</dimen>
+    <dimen name="space_28">28dp</dimen>
+    <dimen name="space_32">32dp</dimen>
+    <dimen name="space_40">40dp</dimen>
+
+    <dimen name="screen_padding">24dp</dimen>
+    <dimen name="screen_padding_compact">16dp</dimen>
+
+    <!-- Corner radius -->
+    <dimen name="radius_small">10dp</dimen>
+    <dimen name="radius_medium">16dp</dimen>
+    <dimen name="radius_large">20dp</dimen>
+    <dimen name="radius_xlarge">26dp</dimen>
+
+    <!-- Buttons -->
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_height_large">72dp</dimen>
+
+    <!-- Icons -->
+    <dimen name="icon_20">20dp</dimen>
+    <dimen name="icon_24">24dp</dimen>
+    <dimen name="icon_28">28dp</dimen>
+    <dimen name="icon_32">32dp</dimen>
+    <dimen name="icon_40">40dp</dimen>
+    <dimen name="icon_48">48dp</dimen>
+
+    <!-- Typography scale -->
+    <dimen name="home_logo_text">44sp</dimen>
+    <dimen name="screen_title">36sp</dimen>
+    <dimen name="screen_subtitle">13sp</dimen>
+    <dimen name="section_title">20sp</dimen>
+    <dimen name="text_body">16sp</dimen>
+    <dimen name="text_body_secondary">14sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="button_text">19sp</dimen>
+    <dimen name="hud_label">12sp</dimen>
+    <dimen name="hud_value">24sp</dimen>
+    <dimen name="timer_value">30sp</dimen>
+    <dimen name="uppercase_letter_spacing">0.15</dimen>
+
+    <!-- Board tile number sizes per grid (referenced from Kotlin as fractions, kept for docs) -->
+    <dimen name="tile_number_3x3">38sp</dimen>
+    <dimen name="tile_number_4x4">34sp</dimen>
+    <dimen name="tile_number_5x5">28sp</dimen>
+    <dimen name="tile_number_6x6">22sp</dimen>
+
+    <!-- Touch target (accessibility minimum, 48dp) -->
+    <dimen name="touch_target_min">48dp</dimen>
+
+    <!-- Layout misc -->
+    <dimen name="land_side_panel_width">240dp</dimen>
+    <dimen name="land_header_width">260dp</dimen>
+    <dimen name="board_max_size">560dp</dimen>
+    <dimen name="board_container_padding">12dp</dimen>
+    <dimen name="board_stroke_width">1dp</dimen>
+    <dimen name="tile_gap">6dp</dimen>
+    <dimen name="tile_stroke_width">1dp</dimen>
+    <dimen name="tile_shadow_offset">5dp</dimen>
+    <dimen name="empty_cell_stroke_width">2dp</dimen>
+
+    <!-- Card / segment strokes -->
+    <dimen name="card_stroke_width">1.5dp</dimen>
+    <dimen name="card_stroke_width_thin">1dp</dimen>
+    <dimen name="segment_selected_stroke_width">2dp</dimen>
+    <dimen name="segment_height">56dp</dimen>
+
+    <!-- Radar (Nearby) -->
+    <dimen name="radar_size">250dp</dimen>
+    <dimen name="radar_center_dot">10dp</dimen>
+
+    <!-- Splash (unchanged) -->
+    <dimen name="splash_tile_size">48dp</dimen>
+    <dimen name="splash_tile_gap">8dp</dimen>
+    <dimen name="splash_tile_text_size">18sp</dimen>
+    <dimen name="splash_fly_distance">280dp</dimen>
+
+    <!-- Button glow elevation (legacy, still used by PrimaryButton/OutlineButton styles) -->
+    <dimen name="button_elevation">6dp</dimen>
+    <dimen name="button_outline_elevation">3dp</dimen>
+    <dimen name="outline_stroke_width">1.5dp</dimen>
+
+    <!-- Legacy aliases kept for screens not yet migrated -->
     <dimen name="space_xs">4dp</dimen>
     <dimen name="space_sm">8dp</dimen>
     <dimen name="space_md">16dp</dimen>
@@ -7,20 +99,8 @@
     <dimen name="space_xl">32dp</dimen>
     <dimen name="radius_md">12dp</dimen>
     <dimen name="radius_lg">18dp</dimen>
-    <dimen name="button_height">56dp</dimen>
-    <dimen name="touch_target_min">44dp</dimen>
-    <dimen name="land_side_panel_width">240dp</dimen>
-    <dimen name="land_header_width">260dp</dimen>
-    <dimen name="board_max_size">520dp</dimen>
     <dimen name="title_size">30sp</dimen>
     <dimen name="body_size">16sp</dimen>
     <dimen name="caption_size">13sp</dimen>
-    <dimen name="splash_tile_size">48dp</dimen>
-    <dimen name="splash_tile_gap">8dp</dimen>
-    <dimen name="splash_tile_text_size">18sp</dimen>
-    <dimen name="splash_fly_distance">280dp</dimen>
-    <dimen name="button_elevation">6dp</dimen>
-    <dimen name="button_outline_elevation">3dp</dimen>
-    <dimen name="outline_stroke_width">1.5dp</dimen>
     <dimen name="ripple_wave_size">180dp</dimen>
 </resources>
