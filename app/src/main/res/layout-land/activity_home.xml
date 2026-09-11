@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Left column: logo + tagline, vertically centered. -->
+    <!-- Left column: logo + tagline, top-aligned to match the settings icon/cards column. -->
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
@@ -39,11 +39,9 @@
         android:textColor="@color/game_text_primary"
         android:textSize="@dimen/screen_title"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/tagline"
         app:layout_constraintEnd_toStartOf="@id/homeLandColumnGuide"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tagline"
@@ -55,26 +53,38 @@
         android:textColor="@color/game_text_secondary"
         android:textSize="@dimen/text_caption"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/title"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
+    <!-- Right column: cards, scrollable so short landscape heights never clip content. -->
+    <ScrollView
+        android:id="@+id/homeCardsScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
+        app:layout_constraintTop_toBottomOf="@id/settingsEntry">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
     <!-- ============== Card: Crea Tavolo (green) ============== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/createTableButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_24"
-        android:layout_marginTop="@dimen/space_12"
         android:background="@drawable/bg_card_green"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="@dimen/space_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
-        app:layout_constraintTop_toBottomOf="@id/settingsEntry">
+        android:padding="@dimen/space_12">
 
         <FrameLayout
             android:id="@+id/createTableIconContainer"
@@ -139,7 +149,7 @@
     <!-- ============== Card: Entra nel Tavolo (blue/cyan) ============== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/joinTableButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_24"
         android:layout_marginTop="@dimen/space_8"
@@ -147,10 +157,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="@dimen/space_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
-        app:layout_constraintTop_toBottomOf="@id/createTableButton">
+        android:padding="@dimen/space_12">
 
         <FrameLayout
             android:id="@+id/joinTableIconContainer"
@@ -215,7 +222,7 @@
     <!-- ============== Card: Gioca da Solo (gold) ============== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/soloPlayButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_24"
         android:layout_marginTop="@dimen/space_8"
@@ -223,10 +230,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="@dimen/space_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/homeLandColumnGuide"
-        app:layout_constraintTop_toBottomOf="@id/joinTableButton">
+        android:padding="@dimen/space_12">
 
         <FrameLayout
             android:id="@+id/soloPlayIconContainer"
@@ -287,5 +291,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
