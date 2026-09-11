@@ -55,7 +55,7 @@
     <string name="round_end_mode">Fine manche</string>
     <string name="round_end_sprint">SPRINT</string>
     <string name="round_end_podium">PODIO</string>
-    <string name="round_end_full_ranking">CLASSIFICA COMPLETA</string>
+    <string name="round_end_full_ranking">CLASSIFICA</string>
 
     <string name="lobby_players_count">%1$d/%2$d giocatori</string>
     <string name="countdown_go">VIA!</string>
