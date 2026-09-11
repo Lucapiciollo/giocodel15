@@ -135,4 +135,10 @@
 
     <!-- Result -->
     <string name="result_you_won">HAI VINTO!</string>
+
+    <!-- App update (Play Core In-App Update) -->
+    <string name="update_ready_title">Aggiornamento pronto</string>
+    <string name="update_ready_message">È stato scaricato un aggiornamento di Gioco del 15. Riavvia l\'app per applicarlo.</string>
+    <string name="update_ready_restart">RIAVVIA ORA</string>
+    <string name="update_ready_later">PIÙ TARDI</string>
 </resources>

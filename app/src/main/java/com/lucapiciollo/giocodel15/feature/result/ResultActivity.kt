@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.review.GameReviewPrompt
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
@@ -21,6 +22,7 @@ import com.lucapiciollo.giocodel15.multiplayer.model.RoundEndMode
 import com.lucapiciollo.giocodel15.multiplayer.model.RoundParticipantStatus
 import com.lucapiciollo.giocodel15.multiplayer.model.RoundRankingEntry
 import com.lucapiciollo.giocodel15.multiplayer.model.TableMode
+import com.lucapiciollo.giocodel15.multiplayer.nearby.DeviceIdentity
 import com.lucapiciollo.giocodel15.multiplayer.nearby.HostDisconnectDialog
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
@@ -56,7 +58,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         TableSession.roundState = RoundState.RESULTS
 
         val rankingJson = intent.getStringExtra(EXTRA_RANKING_JSON).orEmpty()
-        renderRanking(rankingJson)
+        val roundWinner = renderRanking(rankingJson)
         renderTableRanking()
 
         val tableWinner = TableSession.winnerReachedTarget()
@@ -66,6 +68,12 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             tableWinner != null -> getString(R.string.result_table_winner, tableWinner.playerName, tableWinner.wins)
             isHost -> ""
             else -> getString(R.string.result_wait_host)
+        }
+
+        val localPlayerId = DeviceIdentity.displayName(this)
+        val iWon = roundWinner?.playerId == localPlayerId || tableWinner?.playerId == localPlayerId
+        if (iWon) {
+            binding.root.postDelayed({ GameReviewPrompt.maybeRequestReview(this) }, REVIEW_PROMPT_DELAY_MS)
         }
 
         binding.newRoundButton.setOnClickListener { startNewRoundAsHost() }
@@ -96,12 +104,12 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         nearby.listener = this
     }
 
-    private fun renderRanking(json: String) {
+    private fun renderRanking(json: String): RoundRankingEntry? {
         val entries = runCatching { RoundRankingCodec.fromJson(json) }.getOrNull().orEmpty()
         if (entries.isEmpty()) {
             binding.winnerTitle.text = getString(R.string.result_no_results)
             binding.winnerTrophy.isVisible = false
-            return
+            return null
         }
 
         val winner = entries.firstOrNull { it.status == RoundParticipantStatus.FINISHED }
@@ -115,6 +123,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         }
 
         entries.forEachIndexed { index, entry -> addRankingRow(index, entry) }
+        return winner
     }
 
     private fun addRankingRow(index: Int, entry: RoundRankingEntry) {
@@ -307,5 +316,6 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         const val EXTRA_RANKING_JSON = "extra_ranking_json"
         const val EXTRA_IS_HOST = "extra_is_host"
         private const val START_DELAY_MS = 3000L
+        private const val REVIEW_PROMPT_DELAY_MS = 1200L
     }
 }

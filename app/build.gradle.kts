@@ -75,5 +75,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
     implementation("com.google.android.gms:play-services-nearby:19.3.0")
+    implementation("com.google.android.play:review:2.0.2")
+    implementation("com.google.android.play:app-update:2.1.0")
     testImplementation("junit:junit:4.13.2")
 }

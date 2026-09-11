@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
+import com.lucapiciollo.giocodel15.core.review.GameReviewPrompt
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
@@ -82,6 +83,7 @@ class SoloGameActivity : AppCompatActivity() {
             PuzzleBoardConfig(interactionEnabled = false, showNumbers = true, hapticFeedback = true)
         )
         showSolvedState(elapsed)
+        binding.root.postDelayed({ GameReviewPrompt.maybeRequestReview(this) }, REVIEW_PROMPT_DELAY_MS)
     }
 
     private fun showSolvedState(elapsedMs: Long) {
@@ -133,5 +135,6 @@ class SoloGameActivity : AppCompatActivity() {
         const val EXTRA_SEED = "extra_seed"
         private const val DEFAULT_GRID_SIZE = 4
         private const val TIMER_REFRESH_MS = 50L
+        private const val REVIEW_PROMPT_DELAY_MS = 800L
     }
 }

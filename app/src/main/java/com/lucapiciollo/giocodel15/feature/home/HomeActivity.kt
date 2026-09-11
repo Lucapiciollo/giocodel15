@@ -10,12 +10,17 @@ import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyPressScaleAnimation
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
 import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
+import com.lucapiciollo.giocodel15.core.update.GameUpdateChecker
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
 import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
 import com.lucapiciollo.giocodel15.feature.settings.SettingsActivity
 import com.lucapiciollo.giocodel15.feature.solo.SoloSetupActivity
 
+/** Home/menu screen: the "hub" the user starts on and always returns to after a game, a table,
+ * or the settings screen. Also the natural place to centralize the Play Store update check,
+ * since (unlike the splash screen) it's visited repeatedly and stays alive long enough for the
+ * in-app update flow to complete. */
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
@@ -53,5 +58,26 @@ class HomeActivity : AppCompatActivity() {
         binding.settingsEntry.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+
+        GameUpdateChecker.checkForUpdate(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        GameUpdateChecker.resumeUpdateIfInProgress(this)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GameUpdateChecker.REQ_UPDATE && resultCode != RESULT_OK) {
+            // User cancelled or the flow failed; it will simply be retried next time
+            // HomeActivity is created/resumed, no extra handling needed here.
+        }
+    }
+
+    override fun onDestroy() {
+        GameUpdateChecker.unregister()
+        super.onDestroy()
     }
 }
