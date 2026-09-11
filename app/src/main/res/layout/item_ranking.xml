@@ -2,39 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_sm"
-    android:background="@color/game_surface"
+    android:layout_marginBottom="@dimen/space_8"
+    android:background="@drawable/bg_card_neutral"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/space_md">
+    android:padding="@dimen/space_12">
 
     <TextView
         android:id="@+id/position"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/game_primary"
+        android:gravity="center"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/text_body"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/playerName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_8"
         android:layout_weight="1"
         android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/text_body_secondary"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/playerMoves"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/space_md"
-        android:textColor="@color/game_text_secondary" />
+        android:layout_marginEnd="@dimen/space_12"
+        android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/text_caption" />
 
     <TextView
         android:id="@+id/playerTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/text_body_secondary"
         android:textStyle="bold" />
 
 </LinearLayout>

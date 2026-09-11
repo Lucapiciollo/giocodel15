@@ -98,6 +98,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         val entries = runCatching { RoundRankingCodec.fromJson(json) }.getOrNull().orEmpty()
         if (entries.isEmpty()) {
             binding.winnerTitle.text = getString(R.string.result_no_results)
+            binding.winnerTrophy.isVisible = false
             return
         }
 
@@ -105,8 +106,10 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (winner?.result != null) {
             binding.winnerTitle.text = getString(R.string.result_winner, winner.playerName)
             binding.winnerTime.text = formatElapsed(winner.result.elapsedMs)
+            binding.winnerTrophy.isVisible = true
         } else {
             binding.winnerTitle.text = getString(R.string.result_no_results)
+            binding.winnerTrophy.isVisible = false
         }
 
         entries.forEachIndexed { index, entry -> addRankingRow(index, entry) }
@@ -114,6 +117,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private fun addRankingRow(index: Int, entry: RoundRankingEntry) {
         val row = ItemRankingBinding.inflate(layoutInflater, binding.rankingContainer, false)
+        row.root.setBackgroundResource(rankCardBackground(index))
         row.playerName.text = entry.playerName
         val result = entry.result
         if (entry.status == RoundParticipantStatus.FINISHED && result != null) {
@@ -137,6 +141,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     private fun renderTableRanking() {
         TableSession.ranking().forEachIndexed { index, score ->
             val row = ItemRankingBinding.inflate(layoutInflater, binding.tableRankingContainer, false)
+            row.root.setBackgroundResource(rankCardBackground(index))
             row.position.text = medalOrPosition(index)
             row.playerName.text = score.playerName
             row.playerTime.text = getString(R.string.result_wins, score.wins)
@@ -273,11 +278,14 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         finish()
     }
 
-    private fun medalOrPosition(index: Int): String = when (index) {
-        0 -> getString(R.string.result_medal_gold)
-        1 -> getString(R.string.result_medal_silver)
-        2 -> getString(R.string.result_medal_bronze)
-        else -> (index + 1).toString()
+    /** No emoji medals per the Premium Gamer spec — rank is conveyed by the card's color
+     * (gold/blue/neutral, see [rankCardBackground]) plus a plain numeric position. */
+    private fun medalOrPosition(index: Int): String = (index + 1).toString()
+
+    private fun rankCardBackground(index: Int): Int = when (index) {
+        0 -> R.drawable.bg_card_gold
+        1 -> R.drawable.bg_card_blue
+        else -> R.drawable.bg_card_neutral
     }
 
     private fun formatElapsed(elapsedMs: Long): String {

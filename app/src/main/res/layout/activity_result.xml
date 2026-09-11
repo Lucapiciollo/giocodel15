@@ -4,28 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_result_activity"
-    android:padding="@dimen/space_lg">
+    android:padding="@dimen/screen_padding">
 
-    <TextView
-        android:id="@+id/winnerTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/title_size"
-        android:textStyle="bold"
+    <ImageView
+        android:id="@+id/winnerTrophy"
+        android:layout_width="@dimen/icon_48"
+        android:layout_height="@dimen/icon_48"
+        android:layout_marginTop="@dimen/space_8"
+        android:src="@drawable/ic_emoji_events"
+        android:contentDescription="@string/cd_trophy"
+        app:tint="@color/game_gold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/winnerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_12"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:gravity="center"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/screen_title"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/winnerTrophy" />
+
+    <TextView
         android:id="@+id/winnerTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_sm"
+        android:layout_marginTop="@dimen/space_8"
         android:gravity="center"
-        android:textColor="@color/game_primary"
-        android:textSize="@dimen/title_size"
+        android:textColor="@color/game_green"
+        android:textSize="@dimen/section_title"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

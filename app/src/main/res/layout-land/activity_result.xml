@@ -17,23 +17,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.58">
 
+        <ImageView
+            android:id="@+id/winnerTrophy"
+            android:layout_width="@dimen/icon_40"
+            android:layout_height="@dimen/icon_40"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_emoji_events"
+            android:contentDescription="@string/cd_trophy"
+            app:tint="@color/game_gold" />
+
         <TextView
             android:id="@+id/winnerTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_8"
+            android:fontFamily="sans-serif-condensed-medium"
             android:gravity="center"
             android:textColor="@color/game_text_primary"
-            android:textSize="@dimen/title_size"
+            android:textSize="@dimen/screen_title"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/winnerTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_8"
             android:gravity="center"
-            android:textColor="@color/game_primary"
-            android:textSize="@dimen/title_size"
+            android:textColor="@color/game_green"
+            android:textSize="@dimen/section_title"
             android:textStyle="bold" />
 
         <TextView
