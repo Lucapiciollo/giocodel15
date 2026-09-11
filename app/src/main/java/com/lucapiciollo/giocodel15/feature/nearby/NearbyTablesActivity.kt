@@ -3,7 +3,7 @@ package com.lucapiciollo.giocodel15.feature.nearby
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -30,9 +30,10 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         ActivityResultContracts.RequestMultiplePermissions()
     ) { grants ->
         if (grants.values.all { it }) {
+            hideFriendlyError()
             nearby.startDiscovery()
         } else {
-            binding.nearbyStatus.setText(R.string.nearby_permission_denied)
+            showFriendlyError()
         }
     }
 
@@ -50,6 +51,9 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         binding.cancelButton.setOnClickListener {
             nearby.stopDiscovery()
             finish()
+        }
+        binding.nearbyErrorRetryButton.setOnClickListener {
+            startDiscoveryWhenAllowed()
         }
     }
 
@@ -71,6 +75,7 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         binding.tablesContainer.addView(row.root)
         binding.nearbyStatus.text = getString(R.string.nearby_title)
         binding.rippleWave.isVisible = false
+        hideFriendlyError()
     }
 
     override fun onEndpointLost(endpointId: String) {
@@ -94,8 +99,20 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
     override fun onMessageReceived(endpointId: String, message: GameMessage) = Unit
 
     override fun onError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        binding.nearbyStatus.setText(R.string.nearby_error)
+        // Never surface raw Nearby/technical error strings to the player — log them for
+        // debugging and show the friendly permission/connectivity card instead.
+        Log.w(TAG, "Nearby error: $message")
+        showFriendlyError()
+    }
+
+    private fun showFriendlyError() {
+        binding.nearbyErrorCard.isVisible = true
+        binding.rippleWave.isVisible = false
+        binding.nearbyStatus.setText(R.string.nearby_permission_denied)
+    }
+
+    private fun hideFriendlyError() {
+        binding.nearbyErrorCard.isVisible = false
     }
 
     private fun startDiscoveryWhenAllowed() {
@@ -103,11 +120,22 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         val missing = required.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
-        if (missing.isEmpty()) nearby.startDiscovery() else permissionLauncher.launch(missing.toTypedArray())
+        if (missing.isEmpty()) {
+            hideFriendlyError()
+            binding.nearbyStatus.setText(R.string.nearby_searching)
+            binding.rippleWave.isVisible = true
+            nearby.startDiscovery()
+        } else {
+            permissionLauncher.launch(missing.toTypedArray())
+        }
     }
 
     override fun onDestroy() {
         nearby.stopDiscovery()
         super.onDestroy()
+    }
+
+    companion object {
+        private const val TAG = "NearbyTablesActivity"
     }
 }
