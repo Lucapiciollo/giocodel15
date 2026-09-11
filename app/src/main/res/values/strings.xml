@@ -45,11 +45,11 @@
     <string name="lobby_invalid_start_game">Configurazione partita non valida</string>
     <string name="start_game">AVVIA PARTITA</string>
     <string name="nearby_title">Tavoli nelle vicinanze</string>
-    <string name="nearby_searching">Ricerca tavoli Nearby…</string>
+    <string name="nearby_searching">Ricerca tavoli in corso…</string>
     <string name="nearby_empty">Nessun tavolo trovato</string>
     <string name="nearby_connect">ENTRA</string>
-    <string name="nearby_permission_denied">Permessi Nearby necessari per giocare nelle vicinanze.</string>
-    <string name="nearby_error">Errore Nearby</string>
+    <string name="nearby_permission_denied">Permessi necessari per giocare nelle vicinanze.</string>
+    <string name="nearby_error">Errore di connessione</string>
     <string name="nearby_cancel">ANNULLA</string>
 
     <string name="round_end_mode">Fine manche</string>
