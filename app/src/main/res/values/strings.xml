@@ -118,7 +118,7 @@
     <string name="create_table_summary_body">%1$s • %2$d×%3$d • %4$d GIOCATORI • PRIMO A %5$d</string>
 
     <!-- Nearby -->
-    <string name="nearby_subtitle">TROVA SFIDE NEARBY</string>
+    <string name="nearby_subtitle">TROVA SFIDE NELLE VICINANZE</string>
     <string name="nearby_wifi_required_title">Permesso Wi-Fi richiesto</string>
     <string name="nearby_wifi_required_body">Abilita l’accesso alla rete per trovare i tavoli nelle vicinanze.</string>
     <string name="nearby_enable">ABILITA</string>
