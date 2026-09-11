@@ -4,81 +4,204 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_settings_activity"
-    android:padding="@dimen/space_lg">
+    android:padding="@dimen/screen_padding_compact">
 
-    <TextView
-        android:id="@+id/title"
+    <LinearLayout
+        android:id="@+id/settingsHeader"
         android:layout_width="@dimen/land_header_width"
         android:layout_height="wrap_content"
-        android:text="@string/settings_title"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/title_size"
-        android:textStyle="bold"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/backIconButton"
+            android:layout_width="@dimen/touch_target_min"
+            android:layout_height="@dimen/touch_target_min"
+            android:background="@drawable/bg_icon_circle"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/space_12"
+            android:src="@drawable/ic_arrow_back_ios_new"
+            android:contentDescription="@string/cd_back"
+            app:tint="@color/game_cyan" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_12"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="@string/settings_title"
+            android:textColor="@color/game_text_primary"
+            android:textSize="@dimen/screen_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_4"
+            android:letterSpacing="@dimen/uppercase_letter_spacing"
+            android:text="@string/settings_subtitle"
+            android:textColor="@color/game_text_secondary"
+            android:textSize="@dimen/text_caption"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/soundSection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_lg"
+        android:letterSpacing="@dimen/uppercase_letter_spacing"
         android:text="@string/settings_sound_section"
         android:textColor="@color/game_text_secondary"
+        android:textSize="@dimen/text_caption"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintStart_toEndOf="@id/settingsHeader"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <!-- ============== Card: Musica (green) ============== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/musicRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_sm"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/space_8"
+        android:background="@drawable/bg_card_green"
+        android:padding="@dimen/space_12"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintStart_toEndOf="@id/settingsHeader"
         app:layout_constraintTop_toBottomOf="@id/soundSection">
 
+        <FrameLayout
+            android:id="@+id/musicIconContainer"
+            android:layout_width="@dimen/icon_40"
+            android:layout_height="@dimen/icon_40"
+            android:background="@drawable/bg_icon_square_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/icon_20"
+                android:layout_height="@dimen/icon_20"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_music_note"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
         <TextView
+            android:id="@+id/musicLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
             android:text="@string/settings_music_label"
             android:textColor="@color/game_text_primary"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_body_secondary"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/musicHelper"
+            app:layout_constraintEnd_toStartOf="@id/musicSwitch"
+            app:layout_constraintStart_toEndOf="@id/musicIconContainer"
+            app:layout_constraintTop_toTopOf="@id/musicIconContainer"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/musicHelper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:text="@string/settings_music_helper"
+            android:textColor="@color/game_text_secondary"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintBottom_toBottomOf="@id/musicIconContainer"
+            app:layout_constraintEnd_toStartOf="@id/musicSwitch"
+            app:layout_constraintStart_toEndOf="@id/musicIconContainer"
+            app:layout_constraintTop_toBottomOf="@id/musicLabel" />
 
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/musicSwitch"
+            style="@style/Widget.GiocoDel15.Switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <!-- ============== Card: Effetti sonori (cyan) ============== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sfxRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_md"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/space_8"
+        android:background="@drawable/bg_card_blue"
+        android:padding="@dimen/space_12"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintStart_toEndOf="@id/settingsHeader"
         app:layout_constraintTop_toBottomOf="@id/musicRow">
 
+        <FrameLayout
+            android:id="@+id/sfxIconContainer"
+            android:layout_width="@dimen/icon_40"
+            android:layout_height="@dimen/icon_40"
+            android:background="@drawable/bg_icon_square_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/icon_20"
+                android:layout_height="@dimen/icon_20"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_volume_up"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
         <TextView
+            android:id="@+id/sfxLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
             android:text="@string/settings_sfx_label"
             android:textColor="@color/game_text_primary"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_body_secondary"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/sfxHelper"
+            app:layout_constraintEnd_toStartOf="@id/sfxSwitch"
+            app:layout_constraintStart_toEndOf="@id/sfxIconContainer"
+            app:layout_constraintTop_toTopOf="@id/sfxIconContainer"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/sfxHelper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:text="@string/settings_sfx_helper"
+            android:textColor="@color/game_text_secondary"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintBottom_toBottomOf="@id/sfxIconContainer"
+            app:layout_constraintEnd_toStartOf="@id/sfxSwitch"
+            app:layout_constraintStart_toEndOf="@id/sfxIconContainer"
+            app:layout_constraintTop_toBottomOf="@id/sfxLabel" />
 
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/sfxSwitch"
+            style="@style/Widget.GiocoDel15.Switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backButton"
@@ -86,10 +209,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_12"
         android:text="@string/settings_back"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintStart_toEndOf="@id/settingsHeader"
         app:layout_constraintTop_toBottomOf="@id/sfxRow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
