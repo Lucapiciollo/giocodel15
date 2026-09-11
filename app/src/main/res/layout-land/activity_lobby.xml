@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_lobby_activity"
-    android:padding="@dimen/space_lg">
+    android:padding="@dimen/screen_padding_compact">
 
     <LinearLayout
         android:id="@+id/lobbyHeader"
@@ -19,19 +20,75 @@
             android:id="@+id/lobbyTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="@string/lobby_title"
             android:textColor="@color/game_text_primary"
-            android:textSize="@dimen/title_size"
+            android:textSize="@dimen/screen_title"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lobbySubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_8"
             android:text="@string/lobby_waiting"
             android:textColor="@color/game_text_secondary"
-            android:textSize="@dimen/body_size" />
+            android:textSize="@dimen/text_body_secondary" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tableCodeCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_12"
+            android:background="@drawable/bg_card_gold"
+            android:padding="@dimen/space_12"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tableCodeLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:letterSpacing="@dimen/uppercase_letter_spacing"
+                android:text="@string/lobby_table_code_label"
+                android:textColor="@color/game_text_secondary"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/tableCodeCopyButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tableCodeValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:letterSpacing="0.2"
+                android:textColor="@color/game_gold"
+                android:textSize="@dimen/text_body"
+                android:textStyle="bold"
+                tools:text="A1B2C3"
+                app:layout_constraintEnd_toStartOf="@id/tableCodeCopyButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tableCodeLabel" />
+
+            <ImageView
+                android:id="@+id/tableCodeCopyButton"
+                android:layout_width="@dimen/icon_32"
+                android:layout_height="@dimen/icon_32"
+                android:background="@drawable/bg_icon_circle"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:padding="@dimen/space_8"
+                android:src="@drawable/ic_content_copy"
+                android:contentDescription="@string/cd_copy"
+                app:tint="@color/game_gold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <LinearLayout

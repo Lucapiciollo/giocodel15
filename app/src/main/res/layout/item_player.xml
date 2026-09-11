@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/space_sm"
-    android:background="@color/game_surface"
+    android:layout_marginBottom="@dimen/space_8"
+    android:background="@drawable/bg_card_neutral"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/space_md">
+    android:padding="@dimen/space_12">
+
+    <FrameLayout
+        android:layout_width="@dimen/icon_40"
+        android:layout_height="@dimen/icon_40"
+        android:background="@drawable/bg_icon_circle">
+
+        <ImageView
+            android:layout_width="@dimen/icon_20"
+            android:layout_height="@dimen/icon_20"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_person"
+            app:tint="@color/game_cyan"
+            android:contentDescription="@null" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/playerName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_12"
         android:layout_weight="1"
         android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/body_size"
+        android:textSize="@dimen/text_body"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/playerStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/game_primary"
-        android:textSize="@dimen/caption_size" />
+        android:background="@drawable/bg_badge_connected"
+        android:paddingStart="@dimen/space_12"
+        android:paddingTop="@dimen/space_4"
+        android:paddingEnd="@dimen/space_12"
+        android:paddingBottom="@dimen/space_4"
+        android:letterSpacing="@dimen/uppercase_letter_spacing"
+        android:textColor="@color/game_text_primary"
+        android:textSize="@dimen/text_caption"
+        android:textStyle="bold" />
 
 </LinearLayout>

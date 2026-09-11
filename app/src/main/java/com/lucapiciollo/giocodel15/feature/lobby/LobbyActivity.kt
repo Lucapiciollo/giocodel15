@@ -1,5 +1,8 @@
 package com.lucapiciollo.giocodel15.feature.lobby
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -97,6 +100,16 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         binding.startGameButton.isVisible = isHost
         binding.startGameButton.setOnClickListener { startRoundAsHost() }
+
+        if (isHost) {
+            binding.tableCodeCard.isVisible = true
+            binding.tableCodeValue.text = shortTableCode(initialTableId)
+            binding.tableCodeCopyButton.setOnClickListener {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(ClipData.newPlainText("table_code", binding.tableCodeValue.text))
+                Toast.makeText(this, R.string.lobby_table_code_label, Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val selfName = DeviceIdentity.displayName(this)
         TableSession.registerPlayer(selfName, selfName)
@@ -307,11 +320,18 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.lobbySubtitle.text = getString(R.string.lobby_players_count, roster.size, TableSession.maxPlayers)
     }
 
+    /** Derives a short, shareable 6-character code from the real table id, purely for the host
+     * to show/copy as a friendly session reference (joining itself still happens via Nearby
+     * discovery, this is not a manual join-code entry mechanism). */
+    private fun shortTableCode(tableId: String): String =
+        tableId.replace("-", "").take(TABLE_CODE_LENGTH).uppercase().padEnd(TABLE_CODE_LENGTH, '0')
+
     private fun addPlayer(id: String, name: String, host: Boolean) {
         if (playerRows.containsKey(id)) return
         val row = ItemPlayerBinding.inflate(layoutInflater, binding.playersContainer, false)
         row.playerName.text = name
         row.playerStatus.text = getString(if (host) R.string.lobby_status_host else R.string.lobby_status_connected)
+        row.playerStatus.setBackgroundResource(if (host) R.drawable.bg_badge_host else R.drawable.bg_badge_connected)
         playerRows[id] = row
         binding.playersContainer.addView(row.root)
     }
@@ -359,5 +379,6 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         private const val MAX_SUPPORTED_PLAYERS = 8
         private val VALID_TARGET_WINS = setOf(1, 3, 5)
         private const val START_DELAY_MS = 3000L
+        private const val TABLE_CODE_LENGTH = 6
     }
 }
