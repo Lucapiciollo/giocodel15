@@ -31,30 +31,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_8"
-            android:fontFamily="sans-serif-condensed-medium"
+            android:fontFamily="@font/russo_one"
             android:gravity="center"
+            android:textAlignment="center"
             android:textColor="@color/game_text_primary"
             android:textSize="@dimen/screen_title"
-            android:textStyle="bold" />
+            android:shadowColor="#CC000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="8" />
 
         <TextView
             android:id="@+id/winnerTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_8"
+            android:fontFamily="@font/rajdhani_bold"
             android:gravity="center"
+            android:textAlignment="center"
             android:textColor="@color/game_green"
             android:textSize="@dimen/section_title"
-            android:textStyle="bold" />
+            android:shadowColor="#CC000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="6" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_lg"
+            android:fontFamily="@font/rajdhani_bold"
             android:text="@string/result_round_ranking"
             android:textColor="@color/game_text_primary"
-            android:textSize="@dimen/body_size"
-            android:textStyle="bold" />
+            android:textSize="@dimen/body_size" />
 
         <ScrollView
             android:id="@+id/rankingScroll"
@@ -85,10 +94,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/rajdhani_bold"
             android:text="@string/result_table_ranking"
             android:textColor="@color/game_text_primary"
-            android:textSize="@dimen/body_size"
-            android:textStyle="bold" />
+            android:textSize="@dimen/body_size" />
 
         <ScrollView
             android:layout_width="match_parent"

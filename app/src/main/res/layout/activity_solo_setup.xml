@@ -8,14 +8,14 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed-medium"
+        android:gravity="center"
+        android:textAlignment="center"
         android:text="@string/solo_setup_title"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/screen_title"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.GiocoDel15.ScreenTitle"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

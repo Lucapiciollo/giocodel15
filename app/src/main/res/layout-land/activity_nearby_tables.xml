@@ -29,31 +29,49 @@
             android:id="@+id/nearbyTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed-medium"
+            android:fontFamily="@font/russo_one"
+            android:gravity="center"
+            android:textAlignment="center"
             android:text="@string/nearby_title"
             android:textColor="@color/game_text_primary"
             android:textSize="@dimen/screen_title"
-            android:textStyle="bold" />
+            android:shadowColor="#CC000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="8" />
 
         <TextView
             android:id="@+id/nearbySubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_4"
+            android:fontFamily="@font/rajdhani_semibold"
+            android:gravity="center"
+            android:textAlignment="center"
             android:letterSpacing="@dimen/uppercase_letter_spacing"
             android:text="@string/nearby_subtitle"
             android:textColor="@color/game_text_secondary"
             android:textSize="@dimen/text_caption"
-            android:textStyle="bold" />
+            android:shadowColor="#E6000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="6" />
 
         <TextView
             android:id="@+id/nearbyStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_12"
+            android:fontFamily="@font/rajdhani_medium"
+            android:gravity="center"
+            android:textAlignment="center"
             android:text="@string/nearby_searching"
             android:textColor="@color/game_text_secondary"
-            android:textSize="@dimen/text_body_secondary" />
+            android:textSize="@dimen/text_body_secondary"
+            android:shadowColor="#CC000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="6" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/nearbyErrorCard"
@@ -86,10 +104,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_8"
+                android:fontFamily="@font/rajdhani_bold"
                 android:text="@string/nearby_wifi_required_title"
                 android:textColor="@color/game_text_primary"
                 android:textSize="@dimen/text_body_secondary"
-                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/nearbyErrorIconContainer"
                 app:layout_constraintTop_toTopOf="@id/nearbyErrorIconContainer" />

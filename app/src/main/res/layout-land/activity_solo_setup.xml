@@ -10,10 +10,16 @@
         android:id="@+id/title"
         android:layout_width="@dimen/land_header_width"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/russo_one"
+        android:gravity="center"
+        android:textAlignment="center"
         android:text="@string/solo_setup_title"
         android:textColor="@color/game_text_primary"
         android:textSize="@dimen/title_size"
-        android:textStyle="bold"
+        android:shadowColor="#CC000000"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

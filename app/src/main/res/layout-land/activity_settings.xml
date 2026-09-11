@@ -32,22 +32,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_12"
-            android:fontFamily="sans-serif-condensed-medium"
+            android:fontFamily="@font/russo_one"
+            android:gravity="center"
+            android:textAlignment="center"
             android:text="@string/settings_title"
             android:textColor="@color/game_text_primary"
             android:textSize="@dimen/screen_title"
-            android:textStyle="bold" />
+            android:shadowColor="#CC000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="8" />
 
         <TextView
             android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_4"
+            android:fontFamily="@font/rajdhani_semibold"
+            android:gravity="center"
+            android:textAlignment="center"
             android:letterSpacing="@dimen/uppercase_letter_spacing"
             android:text="@string/settings_subtitle"
             android:textColor="@color/game_text_secondary"
             android:textSize="@dimen/text_caption"
-            android:textStyle="bold" />
+            android:shadowColor="#E6000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="6" />
     </LinearLayout>
 
     <TextView
@@ -55,11 +66,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_lg"
+        android:fontFamily="@font/rajdhani_semibold"
         android:letterSpacing="@dimen/uppercase_letter_spacing"
         android:text="@string/settings_sound_section"
         android:textColor="@color/game_text_secondary"
         android:textSize="@dimen/text_caption"
-        android:textStyle="bold"
+        android:shadowColor="#CC000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="6"
         app:layout_constraintStart_toEndOf="@id/settingsHeader"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -99,10 +114,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_12"
             android:layout_marginEnd="@dimen/space_8"
+            android:fontFamily="@font/rajdhani_bold"
             android:text="@string/settings_music_label"
             android:textColor="@color/game_text_primary"
             android:textSize="@dimen/text_body_secondary"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/musicHelper"
             app:layout_constraintEnd_toStartOf="@id/musicSwitch"
             app:layout_constraintStart_toEndOf="@id/musicIconContainer"
@@ -169,10 +184,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_12"
             android:layout_marginEnd="@dimen/space_8"
+            android:fontFamily="@font/rajdhani_bold"
             android:text="@string/settings_sfx_label"
             android:textColor="@color/game_text_primary"
             android:textSize="@dimen/text_body_secondary"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/sfxHelper"
             app:layout_constraintEnd_toStartOf="@id/sfxSwitch"
             app:layout_constraintStart_toEndOf="@id/sfxIconContainer"

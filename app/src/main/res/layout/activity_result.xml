@@ -23,11 +23,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_12"
-        android:fontFamily="sans-serif-condensed-medium"
         android:gravity="center"
-        android:textColor="@color/game_text_primary"
-        android:textSize="@dimen/screen_title"
-        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.GiocoDel15.ScreenTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/winnerTrophy" />
@@ -37,10 +35,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_8"
+        android:fontFamily="@font/rajdhani_bold"
         android:gravity="center"
+        android:textAlignment="center"
         android:textColor="@color/game_green"
         android:textSize="@dimen/section_title"
-        android:textStyle="bold"
+        android:shadowColor="#CC000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/winnerTitle" />
@@ -63,10 +66,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/rajdhani_bold"
                 android:text="@string/result_round_ranking"
                 android:textColor="@color/game_text_primary"
-                android:textSize="@dimen/body_size"
-                android:textStyle="bold" />
+                android:textSize="@dimen/body_size" />
 
             <LinearLayout
                 android:id="@+id/rankingContainer"
@@ -79,10 +82,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_xl"
+                android:fontFamily="@font/rajdhani_bold"
                 android:text="@string/result_table_ranking"
                 android:textColor="@color/game_text_primary"
-                android:textSize="@dimen/body_size"
-                android:textStyle="bold" />
+                android:textSize="@dimen/body_size" />
 
             <LinearLayout
                 android:id="@+id/tableRankingContainer"

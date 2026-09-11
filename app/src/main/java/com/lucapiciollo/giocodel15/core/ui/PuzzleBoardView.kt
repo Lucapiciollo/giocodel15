@@ -53,7 +53,7 @@ class PuzzleBoardView @JvmOverloads constructor(
     }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
-        typeface = android.graphics.Typeface.DEFAULT_BOLD
+        typeface = androidx.core.content.res.ResourcesCompat.getFont(context, R.font.rajdhani_bold)
         color = ContextCompat.getColor(context, R.color.game_tile_text)
     }
 
