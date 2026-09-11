@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivityNearbyTablesBinding
 import com.lucapiciollo.giocodel15.databinding.ItemNearbyTableBinding
 import com.lucapiciollo.giocodel15.feature.lobby.LobbyActivity
@@ -43,6 +44,7 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this

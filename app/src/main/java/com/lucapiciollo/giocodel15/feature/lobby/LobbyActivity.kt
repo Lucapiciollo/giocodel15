@@ -17,6 +17,8 @@ import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.applyPressScaleAnimation
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivityLobbyBinding
 import com.lucapiciollo.giocodel15.databinding.ItemPlayerBinding
 import com.lucapiciollo.giocodel15.feature.game.GameActivity
@@ -81,6 +83,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this
@@ -104,6 +107,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (isHost) {
             binding.tableCodeCard.isVisible = true
             binding.tableCodeValue.text = shortTableCode(initialTableId)
+            binding.tableCodeCopyButton.applyPressScaleAnimation()
             binding.tableCodeCopyButton.setOnClickListener {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboard.setPrimaryClip(ClipData.newPlainText("table_code", binding.tableCodeValue.text))

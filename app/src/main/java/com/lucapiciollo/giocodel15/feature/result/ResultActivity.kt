@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivityResultBinding
 import com.lucapiciollo.giocodel15.databinding.ItemRankingBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
@@ -48,6 +49,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
 
         nearby = NearbySession.manager(this)
         nearby.listener = this

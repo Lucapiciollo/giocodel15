@@ -11,6 +11,7 @@ import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivitySoloGameBinding
 import com.lucapiciollo.giocodel15.feature.game.GameViewModel
 import com.lucapiciollo.giocodel15.feature.home.HomeActivity
@@ -40,6 +41,7 @@ class SoloGameActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
 
         val seed = intent.getLongExtra(EXTRA_SEED, System.currentTimeMillis())
         viewModel.initialize(gridSize, seed)

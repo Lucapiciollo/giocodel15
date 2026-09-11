@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivityCreateTableBinding
 import com.lucapiciollo.giocodel15.feature.lobby.LobbyActivity
 import com.lucapiciollo.giocodel15.multiplayer.model.RoundEndMode
@@ -23,6 +24,7 @@ class CreateTableActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
 
         binding.modeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener

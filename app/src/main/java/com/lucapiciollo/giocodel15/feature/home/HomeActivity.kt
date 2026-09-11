@@ -7,7 +7,9 @@ import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyHorizontalGradient
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
+import com.lucapiciollo.giocodel15.core.ui.applyPressScaleAnimation
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
 import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
@@ -24,11 +26,17 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
 
         binding.title.applyHorizontalGradient(
             ContextCompat.getColor(this, R.color.game_primary),
             ContextCompat.getColor(this, R.color.game_secondary)
         )
+
+        binding.createTableButton.applyPressScaleAnimation()
+        binding.joinTableButton.applyPressScaleAnimation()
+        binding.soloPlayButton.applyPressScaleAnimation()
+        binding.settingsEntry.applyPressScaleAnimation()
 
         binding.createTableButton.setOnClickListener {
             startActivity(Intent(this, CreateTableActivity::class.java))

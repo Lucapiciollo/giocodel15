@@ -6,6 +6,8 @@ import com.lucapiciollo.giocodel15.audio.GameAudioManager
 import com.lucapiciollo.giocodel15.audio.SoundSettings
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.applyPressScaleAnimation
+import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivitySettingsBinding
 
 /** Lets the player turn background music and sound effects on/off. Changes apply immediately
@@ -20,6 +22,9 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.root.applyStatusBarTopInset()
         binding.root.applyNavigationBarBottomInset()
+        binding.root.playEntranceAnimation()
+
+        binding.backIconButton.applyPressScaleAnimation()
 
         binding.musicSwitch.isChecked = SoundSettings.isMusicEnabled(this)
         binding.sfxSwitch.isChecked = SoundSettings.isSfxEnabled(this)
