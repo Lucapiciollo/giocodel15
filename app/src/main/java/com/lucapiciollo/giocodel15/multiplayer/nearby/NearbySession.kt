@@ -13,8 +13,8 @@ object NearbySession {
 
     fun reset() {
         manager?.apply {
-            resetTransport()
             listener?.let(::clearListener)
+            resetTransport()
         }
         manager = null
     }
