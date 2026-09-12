@@ -63,8 +63,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding = ActivityLobbyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (isHost) NearbySession.reset()
         nearby = NearbySession.manager(this)
-        if (isHost) nearby.resetTransport()
         nearby.setListener(this)
 
         if (isHost) {
