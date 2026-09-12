@@ -13,10 +13,8 @@ object NearbySession {
 
     fun reset() {
         manager?.apply {
-            stopAdvertising()
-            stopDiscovery()
-            disconnectAll()
-            listener = null
+            resetTransport()
+            listener?.let(::clearListener)
         }
         manager = null
     }
