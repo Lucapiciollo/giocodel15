@@ -32,10 +32,12 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     private val endpointNames = linkedMapOf<String, String>()
     private val playerRows = linkedMapOf<String, ItemPlayerBinding>()
     private val handler = Handler(Looper.getMainLooper())
+    private var leavingForGame = false
 
     private val isHost by lazy { intent.getBooleanExtra(EXTRA_IS_HOST, false) }
     private val gridSize by lazy { intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE) }
     private val initialTableId by lazy { intent.getStringExtra(EXTRA_TABLE_ID) ?: DEFAULT_TABLE_ID }
+    private val hostEndpointId by lazy { intent.getStringExtra(EXTRA_HOST_ENDPOINT_ID) }
     private val tableMode by lazy {
         runCatching {
             TableMode.valueOf(intent.getStringExtra(EXTRA_TABLE_MODE) ?: TableMode.TABLE.name)
@@ -88,12 +90,24 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             requestPermissionsAndAdvertise()
         } else {
             binding.lobbySubtitle.text = getString(R.string.lobby_waiting)
+            requestGameConfigFromHost()
         }
     }
 
     override fun onResume() {
         super.onResume()
         nearby.setListener(this)
+    }
+
+    private fun requestGameConfigFromHost() {
+        val endpointId = hostEndpointId ?: return
+        nearby.send(
+            endpointId,
+            GameMessage(
+                type = GameMessageType.HELLO,
+                tableId = initialTableId
+            )
+        )
     }
 
     override fun onConnectionInitiated(endpointId: String, endpointName: String) {
@@ -143,6 +157,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
         if (isFinishing || isDestroyed || message.version != GameMessage.CURRENT_VERSION) return
+
+        if (isHost && message.type == GameMessageType.HELLO) {
+            sendGameConfig(endpointId)
+            return
+        }
 
         if (!isHost && message.type == GameMessageType.GAME_CONFIG) {
             applyGameConfig(message)
@@ -221,7 +240,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun startRoundAsHost() {
-        if (binding.startGameButton.isEnabled.not()) return
+        if (!binding.startGameButton.isEnabled) return
 
         val seed = System.currentTimeMillis()
         val roundId = seed.toString()
@@ -265,6 +284,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.lobbySubtitle.text = "3 · 2 · 1 · VIA"
         handler.postDelayed({
             if (isFinishing || isDestroyed) return@postDelayed
+            leavingForGame = true
             startActivity(
                 Intent(this, GameActivity::class.java).apply {
                     putExtra(GameActivity.EXTRA_GRID_SIZE, size)
@@ -291,8 +311,9 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
         nearby.clearListener(this)
-        if (isHost && isFinishing && TableSession.expectedPlayers <= 1) {
-            nearby.stopAdvertising()
+        if (isFinishing && !isChangingConfigurations && !leavingForGame) {
+            nearby.resetTransport()
+            TableSession.clear()
         }
         super.onDestroy()
     }
