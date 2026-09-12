@@ -19,6 +19,7 @@ import com.lucapiciollo.giocodel15.multiplayer.nearby.DeviceIdentity
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyPermissions
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
+import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyTableAdvertisement
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessageType
 import com.lucapiciollo.giocodel15.multiplayer.session.TableSession
@@ -61,7 +62,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         setContentView(binding.root)
 
         nearby = NearbySession.manager(this)
-        nearby.listener = this
+        if (isHost) nearby.resetTransport()
+        nearby.setListener(this)
 
         if (isHost) {
             TableSession.tableId = initialTableId
@@ -71,6 +73,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             TableSession.maxPlayers = maxPlayers
             TableSession.targetWins = targetWins
         } else {
+            TableSession.tableId = initialTableId
             TableSession.isHost = false
         }
 
@@ -90,15 +93,18 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onResume() {
         super.onResume()
-        nearby.listener = this
+        nearby.setListener(this)
     }
 
     override fun onConnectionInitiated(endpointId: String, endpointName: String) {
+        if (isFinishing || isDestroyed) return
         endpointNames[endpointId] = endpointName
     }
 
     override fun onConnected(endpointId: String) {
-        if (!isHost) return
+        if (isFinishing || isDestroyed || !isHost) return
+        if (playerRows.containsKey(endpointId)) return
+
         if (playerRows.size >= TableSession.maxPlayers) {
             nearby.disconnect(endpointId)
             Toast.makeText(this, R.string.lobby_table_full, Toast.LENGTH_SHORT).show()
@@ -108,14 +114,41 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         val name = endpointNames[endpointId] ?: endpointId
         addPlayer(endpointId, name, false)
         TableSession.registerPlayer(endpointId, name)
+        sendGameConfig(endpointId)
+    }
+
+    private fun sendGameConfig(endpointId: String) {
+        val payload = JSONObject()
+            .put("gridSize", TableSession.gridSize)
+            .put("maxPlayers", TableSession.maxPlayers)
+            .put("targetWins", TableSession.targetWins)
+            .put("tableMode", TableSession.tableMode.name)
+            .toString()
+
+        nearby.send(
+            endpointId,
+            GameMessage(
+                type = GameMessageType.GAME_CONFIG,
+                tableId = TableSession.tableId,
+                payload = payload
+            )
+        )
     }
 
     override fun onDisconnected(endpointId: String) {
+        if (isFinishing || isDestroyed) return
         playerRows.remove(endpointId)?.let { binding.playersContainer.removeView(it.root) }
+        endpointNames.remove(endpointId)
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
-        if (message.version != GameMessage.CURRENT_VERSION) return
+        if (isFinishing || isDestroyed || message.version != GameMessage.CURRENT_VERSION) return
+
+        if (!isHost && message.type == GameMessageType.GAME_CONFIG) {
+            applyGameConfig(message)
+            return
+        }
+
         if (message.type != GameMessageType.START_GAME || isHost) return
 
         runCatching {
@@ -145,7 +178,28 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         }
     }
 
+    private fun applyGameConfig(message: GameMessage) {
+        runCatching {
+            val payload = JSONObject(message.payload)
+            TableSession.tableId = message.tableId
+            TableSession.gridSize = payload.optInt("gridSize", DEFAULT_GRID_SIZE)
+            TableSession.maxPlayers = payload.optInt("maxPlayers", DEFAULT_MAX_PLAYERS)
+                .coerceIn(2, MAX_SUPPORTED_PLAYERS)
+            TableSession.targetWins = payload.optInt("targetWins", DEFAULT_TARGET_WINS).let {
+                if (it in VALID_TARGET_WINS) it else DEFAULT_TARGET_WINS
+            }
+            TableSession.tableMode = runCatching {
+                TableMode.valueOf(payload.optString("tableMode", TableMode.TABLE.name))
+            }.getOrDefault(TableMode.TABLE)
+
+            binding.lobbySubtitle.text = "${TableSession.gridSize}×${TableSession.gridSize} · ${getString(R.string.lobby_waiting)}"
+        }.onFailure {
+            onError(it.message ?: "Configurazione tavolo non valida")
+        }
+    }
+
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -158,11 +212,17 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun startHostAdvertising() {
-        nearby.startAdvertising(DeviceIdentity.displayName(this))
+        val endpointName = NearbyTableAdvertisement.encode(
+            TableSession.tableId,
+            DeviceIdentity.displayName(this)
+        )
+        nearby.startAdvertising(endpointName)
         binding.lobbySubtitle.text = "${gridSize}×${gridSize} · ${getString(R.string.lobby_waiting)}"
     }
 
     private fun startRoundAsHost() {
+        if (binding.startGameButton.isEnabled.not()) return
+
         val seed = System.currentTimeMillis()
         val roundId = seed.toString()
         val expectedPlayers = playerRows.size.coerceAtLeast(1)
@@ -195,29 +255,32 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         size: Int,
         seed: Long,
         delayMs: Long,
-        roundId: String,
+        roundId: String?,
         expectedPlayers: Int,
         resolvedTableId: String
     ) {
+        val resolvedRoundId = roundId ?: return
         TableSession.gridSize = size
         TableSession.expectedPlayers = expectedPlayers
         binding.lobbySubtitle.text = "3 · 2 · 1 · VIA"
         handler.postDelayed({
+            if (isFinishing || isDestroyed) return@postDelayed
             startActivity(
                 Intent(this, GameActivity::class.java).apply {
                     putExtra(GameActivity.EXTRA_GRID_SIZE, size)
                     putExtra(GameActivity.EXTRA_SEED, seed)
                     putExtra(GameActivity.EXTRA_IS_HOST, isHost)
                     putExtra(GameActivity.EXTRA_TABLE_ID, resolvedTableId)
-                    putExtra(GameActivity.EXTRA_ROUND_ID, roundId)
+                    putExtra(GameActivity.EXTRA_ROUND_ID, resolvedRoundId)
                     putExtra(GameActivity.EXTRA_EXPECTED_PLAYERS, expectedPlayers)
                 }
             )
+            finish()
         }, delayMs.coerceAtLeast(0L))
     }
 
     private fun addPlayer(id: String, name: String, host: Boolean) {
-        if (playerRows.containsKey(id)) return
+        if (playerRows.containsKey(id) || isFinishing || isDestroyed) return
         val row = ItemPlayerBinding.inflate(layoutInflater, binding.playersContainer, false)
         row.playerName.text = name
         row.playerStatus.text = if (host) "HOST" else "CONNESSO"
@@ -227,6 +290,10 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
+        nearby.clearListener(this)
+        if (isHost && isFinishing && TableSession.expectedPlayers <= 1) {
+            nearby.stopAdvertising()
+        }
         super.onDestroy()
     }
 
