@@ -79,7 +79,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.root.playEntranceAnimation()
 
         nearby = NearbySession.manager(this)
-        nearby.listener = this
+        nearby.setListener(this)
 
         val gridSize = intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE)
         val seed = intent.getLongExtra(EXTRA_SEED, System.currentTimeMillis())
@@ -147,7 +147,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onResume() {
         super.onResume()
-        nearby.listener = this
+        nearby.setListener(this)
     }
 
     private fun onPuzzleSolved() {
@@ -192,6 +192,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
+        if (isFinishing || isDestroyed) return
         if (message.type == GameMessageType.HOST_CLOSED) {
             if (!isHost) showHostClosedDialog()
             return
@@ -277,6 +278,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun openResults(rankingJson: String) {
+        if (isFinishing || isDestroyed) return
         val entries = RoundRankingCodec.fromJson(rankingJson)
         TableSession.applyRound(entries.mapNotNull { it.result })
         TableSession.roundState = RoundState.RESULTS
@@ -300,6 +302,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         binding.gameStatus.text = message
     }
 
@@ -311,7 +314,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private fun closeTableAsHost() {
         nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = tableId, roundId = roundId))
-        nearby.disconnectAll()
+        nearby.resetTransport()
         TableSession.clear()
         goHome()
     }
@@ -321,7 +324,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
      * path, instead of a bare `finish()` that used to just pop back to whatever screen (Nearby
      * discovery/table setup) was underneath in the stack instead of Home. */
     private fun leaveAsGuest() {
-        nearby.disconnectAll()
+        nearby.resetTransport()
         TableSession.clear()
         goHome()
     }
@@ -341,6 +344,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
+        nearby.clearListener(this)
         super.onDestroy()
     }
 

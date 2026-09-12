@@ -31,6 +31,7 @@ import com.lucapiciollo.giocodel15.multiplayer.nearby.HostDisconnectDialog
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyConnectionManager
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyPermissions
 import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbySession
+import com.lucapiciollo.giocodel15.multiplayer.nearby.NearbyTableAdvertisement
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessage
 import com.lucapiciollo.giocodel15.multiplayer.protocol.GameMessageType
 import com.lucapiciollo.giocodel15.multiplayer.protocol.LobbyPlayerInfo
@@ -49,6 +50,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     private val handler = Handler(Looper.getMainLooper())
     private val startScheduler = RoundStartScheduler(handler)
     private var hostClosedHandled = false
+    private var leavingForGame = false
 
     private val isHost by lazy { intent.getBooleanExtra(EXTRA_IS_HOST, false) }
     private val gridSize by lazy { intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE) }
@@ -86,8 +88,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.root.applyNavigationBarBottomInset()
         binding.root.playEntranceAnimation()
 
+        // Defensive: a stale manager/listener from a previous hosting attempt (e.g. the host
+        // backed out and immediately created a new table) must not leak into this session.
+        if (isHost) NearbySession.reset()
         nearby = NearbySession.manager(this)
-        nearby.listener = this
+        nearby.setListener(this)
 
         if (isHost) {
             TableSession.tableId = initialTableId
@@ -98,6 +103,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             TableSession.targetWins = targetWins
             TableSession.roundEndMode = roundEndMode
         } else {
+            TableSession.tableId = initialTableId
             TableSession.isHost = false
         }
         TableSession.roundState = RoundState.WAITING
@@ -142,15 +148,16 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onResume() {
         super.onResume()
-        nearby.listener = this
+        nearby.setListener(this)
     }
 
     override fun onConnectionInitiated(endpointId: String, endpointName: String) {
+        if (isFinishing || isDestroyed) return
         TableSession.bindEndpoint(endpointId, endpointName)
     }
 
     override fun onConnected(endpointId: String) {
-        if (!isHost) return
+        if (isFinishing || isDestroyed || !isHost) return
         if (TableSession.activeRoster().size >= TableSession.maxPlayers) {
             nearby.disconnect(endpointId)
             Toast.makeText(this, R.string.lobby_table_full, Toast.LENGTH_SHORT).show()
@@ -164,6 +171,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onDisconnected(endpointId: String) {
+        if (isFinishing || isDestroyed) return
         if (isHost) {
             val playerId = TableSession.unbindEndpoint(endpointId)
             if (playerId != null) {
@@ -177,7 +185,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
-        if (message.version != GameMessage.CURRENT_VERSION) return
+        if (isFinishing || isDestroyed || message.version != GameMessage.CURRENT_VERSION) return
 
         when (message.type) {
             GameMessageType.HOST_CLOSED -> if (!isHost) showHostClosedDialog()
@@ -224,6 +232,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -236,7 +245,11 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun startHostAdvertising() {
-        nearby.startAdvertising(DeviceIdentity.displayName(this))
+        val endpointName = NearbyTableAdvertisement.encode(
+            TableSession.tableId,
+            DeviceIdentity.displayName(this)
+        )
+        nearby.startAdvertising(endpointName)
         binding.lobbySubtitle.text = getString(R.string.lobby_grid_waiting, gridSize, gridSize, getString(R.string.lobby_waiting))
     }
 
@@ -288,6 +301,8 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             onTick = { secondsLeft -> binding.lobbySubtitle.text = getString(R.string.countdown_seconds, secondsLeft) },
             onStart = {
                 binding.lobbySubtitle.text = getString(R.string.countdown_go)
+                if (isFinishing || isDestroyed) return@schedule
+                leavingForGame = true
                 startActivity(
                     Intent(this, GameActivity::class.java).apply {
                         putExtra(GameActivity.EXTRA_GRID_SIZE, size)
@@ -339,7 +354,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         tableId.replace("-", "").take(TABLE_CODE_LENGTH).uppercase().padEnd(TABLE_CODE_LENGTH, '0')
 
     private fun addPlayer(id: String, name: String, host: Boolean) {
-        if (playerRows.containsKey(id)) return
+        if (playerRows.containsKey(id) || isFinishing || isDestroyed) return
         val row = ItemPlayerBinding.inflate(layoutInflater, binding.playersContainer, false)
         row.playerName.text = name
         row.playerStatus.text = getString(if (host) R.string.lobby_status_host else R.string.lobby_status_connected)
@@ -356,7 +371,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     private fun closeTableAsHost() {
         nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = TableSession.tableId))
-        nearby.disconnectAll()
+        nearby.resetTransport()
         TableSession.clear()
         goHome()
     }
@@ -366,7 +381,7 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
      * bare `finish()` that used to just pop back to the Nearby discovery/table-setup screen still
      * sitting underneath in the back stack instead of Home. */
     private fun leaveAsGuest() {
-        nearby.disconnectAll()
+        nearby.resetTransport()
         TableSession.clear()
         goHome()
     }
@@ -374,6 +389,16 @@ class LobbyActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     override fun onDestroy() {
         startScheduler.cancel()
         handler.removeCallbacksAndMessages(null)
+        nearby.clearListener(this)
+        // Safety net for cases that bypass the back-button confirm flow above (e.g. the task
+        // being swiped away, or the system killing the Activity): if we're really leaving this
+        // screen for good — not just rotating, and not because we're transitioning into
+        // GameActivity — release the Nearby transport and clear the table session so a stale
+        // connection/listener can't leak into whatever screen comes next.
+        if (isFinishing && !isChangingConfigurations && !leavingForGame) {
+            nearby.resetTransport()
+            TableSession.clear()
+        }
         super.onDestroy()
     }
 

@@ -54,7 +54,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         binding.root.playEntranceAnimation()
 
         nearby = NearbySession.manager(this)
-        nearby.listener = this
+        nearby.setListener(this)
         TableSession.roundState = RoundState.RESULTS
 
         val rankingJson = intent.getStringExtra(EXTRA_RANKING_JSON).orEmpty()
@@ -82,7 +82,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             if (isHost) {
                 nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = TableSession.tableId))
             }
-            nearby.disconnectAll()
+            nearby.resetTransport()
             TableSession.clear()
             goHome()
         }
@@ -91,7 +91,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             override fun handleOnBackPressed() {
                 if (isHost) {
                     nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = TableSession.tableId))
-                    nearby.disconnectAll()
+                    nearby.resetTransport()
                     TableSession.clear()
                 }
                 goHome()
@@ -101,7 +101,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onResume() {
         super.onResume()
-        nearby.listener = this
+        nearby.setListener(this)
     }
 
     private fun renderRanking(json: String): RoundRankingEntry? {
@@ -162,7 +162,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun startNewRoundAsHost() {
-        if (!isHost || TableSession.winnerReachedTarget() != null) return
+        if (!isHost || TableSession.winnerReachedTarget() != null || !binding.newRoundButton.isEnabled) return
 
         val seed = System.currentTimeMillis()
         val roundId = UUID.randomUUID().toString()
@@ -198,7 +198,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (isHost) {
             nearby.broadcast(GameMessage(type = GameMessageType.HOST_CLOSED, tableId = TableSession.tableId))
         }
-        nearby.disconnectAll()
+        nearby.resetTransport()
         TableSession.clear()
         startActivity(
             Intent(this, if (isHost) CreateTableActivity::class.java else NearbyTablesActivity::class.java)
@@ -208,6 +208,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
+        if (isFinishing || isDestroyed) return
         if (message.type == GameMessageType.HOST_CLOSED) {
             if (!isHost) showHostClosedDialog()
             return
@@ -253,6 +254,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
             onTick = { secondsLeft -> binding.tableStatus.text = getString(R.string.countdown_seconds, secondsLeft) },
             onStart = {
                 binding.tableStatus.text = getString(R.string.countdown_go)
+                if (isFinishing || isDestroyed) return@schedule
                 startActivity(Intent(this, GameActivity::class.java).apply {
                     putExtra(GameActivity.EXTRA_GRID_SIZE, gridSize)
                     putExtra(GameActivity.EXTRA_SEED, seed)
@@ -268,10 +270,12 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         binding.tableStatus.text = message
     }
 
     override fun onDisconnected(endpointId: String) {
+        if (isFinishing || isDestroyed) return
         if (!isHost) showHostClosedDialog()
     }
 
@@ -301,6 +305,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     override fun onDestroy() {
         startScheduler.cancel()
         handler.removeCallbacksAndMessages(null)
+        nearby.clearListener(this)
         super.onDestroy()
     }
 
