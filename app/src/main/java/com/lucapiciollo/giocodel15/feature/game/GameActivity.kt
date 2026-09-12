@@ -47,7 +47,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         setContentView(binding.root)
 
         nearby = NearbySession.manager(this)
-        nearby.listener = this
+        nearby.setListener(this)
 
         val gridSize = intent.getIntExtra(EXTRA_GRID_SIZE, DEFAULT_GRID_SIZE)
         val seed = intent.getLongExtra(EXTRA_SEED, System.currentTimeMillis())
@@ -81,7 +81,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onResume() {
         super.onResume()
-        nearby.listener = this
+        nearby.setListener(this)
     }
 
     private fun onPuzzleSolved() {
@@ -122,6 +122,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
+        if (isFinishing || isDestroyed) return
         if (message.tableId != tableId || message.roundId != roundId) return
         when (message.type) {
             GameMessageType.PLAYER_FINISHED -> if (isHost) {
@@ -150,7 +151,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun acceptResult(result: PlayerResult) {
-        if (results.containsKey(result.playerId)) return
+        if (isFinishing || isDestroyed || results.containsKey(result.playerId)) return
         if (result.elapsedMs <= 0L || result.moves <= 0) return
 
         results[result.playerId] = result
@@ -194,6 +195,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun openResults(rankingJson: String) {
+        if (isFinishing || isDestroyed) return
         val ranking = rankingFromJson(rankingJson)
         TableSession.applyRound(ranking)
 
@@ -207,6 +209,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     override fun onDisconnected(endpointId: String) = Unit
 
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         binding.gameStatus.text = message
     }
 
@@ -254,6 +257,7 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
+        nearby.clearListener(this)
         super.onDestroy()
     }
 
