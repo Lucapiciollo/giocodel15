@@ -92,8 +92,6 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         val tableId = endpointToTableId.remove(endpointId) ?: return
         val table = tablesById[tableId] ?: return
 
-        // If the same logical table has already been rediscovered with a new endpoint,
-        // losing the old endpoint must not remove the visible row.
         if (table.endpointId != endpointId) return
 
         tablesById.remove(tableId)
@@ -117,6 +115,7 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
     override fun onMessageReceived(endpointId: String, message: GameMessage) = Unit
 
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         binding.nearbyStatus.setText(R.string.nearby_error)
         tablesById.values.forEach { it.row.joinButton.isEnabled = true }
@@ -132,7 +131,7 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
 
     override fun onDestroy() {
         nearby.clearListener(this)
-        if (!isChangingConfigurations && !isFinishing) nearby.stopDiscovery()
+        if (!isChangingConfigurations) nearby.stopDiscovery()
         super.onDestroy()
     }
 }
