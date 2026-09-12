@@ -47,8 +47,8 @@ class NearbyTablesActivity : AppCompatActivity(), NearbyConnectionManager.Listen
         binding = ActivityNearbyTablesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        NearbySession.reset()
         nearby = NearbySession.manager(this)
-        nearby.resetTransport()
         nearby.setListener(this)
         startDiscoveryWhenAllowed()
     }
