@@ -33,7 +33,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         setContentView(binding.root)
 
         nearby = NearbySession.manager(this)
-        nearby.listener = this
+        nearby.setListener(this)
 
         val rankingJson = intent.getStringExtra(EXTRA_RANKING_JSON).orEmpty()
         renderRanking(rankingJson)
@@ -49,7 +49,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         binding.newRoundButton.setOnClickListener { startNewRoundAsHost() }
         binding.closeButton.setOnClickListener {
-            nearby.disconnectAll()
+            nearby.resetTransport()
             TableSession.clear()
             finishAffinity()
         }
@@ -57,7 +57,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onResume() {
         super.onResume()
-        nearby.listener = this
+        nearby.setListener(this)
     }
 
     private fun renderRanking(json: String) {
@@ -94,7 +94,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     private fun startNewRoundAsHost() {
-        if (!isHost || TableSession.winnerReachedTarget() != null) return
+        if (!isHost || TableSession.winnerReachedTarget() != null || !binding.newRoundButton.isEnabled) return
 
         val seed = System.currentTimeMillis()
         val roundId = seed.toString()
@@ -123,6 +123,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onMessageReceived(endpointId: String, message: GameMessage) {
+        if (isFinishing || isDestroyed) return
         if (isHost || message.type != GameMessageType.NEW_ROUND) return
         if (message.tableId != TableSession.tableId) return
 
@@ -146,21 +147,23 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     private fun scheduleRoundStart(
         gridSize: Int,
         seed: Long,
-        roundId: String,
+        roundId: String?,
         expectedPlayers: Int,
         delayMs: Long
     ) {
+        val resolvedRoundId = roundId ?: return
         TableSession.gridSize = gridSize
         TableSession.expectedPlayers = expectedPlayers
         binding.tableStatus.text = "3 · 2 · 1 · VIA"
 
         handler.postDelayed({
+            if (isFinishing || isDestroyed) return@postDelayed
             startActivity(Intent(this, GameActivity::class.java).apply {
                 putExtra(GameActivity.EXTRA_GRID_SIZE, gridSize)
                 putExtra(GameActivity.EXTRA_SEED, seed)
                 putExtra(GameActivity.EXTRA_IS_HOST, isHost)
                 putExtra(GameActivity.EXTRA_TABLE_ID, TableSession.tableId)
-                putExtra(GameActivity.EXTRA_ROUND_ID, roundId)
+                putExtra(GameActivity.EXTRA_ROUND_ID, resolvedRoundId)
                 putExtra(GameActivity.EXTRA_EXPECTED_PLAYERS, expectedPlayers)
             })
             finish()
@@ -168,6 +171,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
     }
 
     override fun onError(message: String) {
+        if (isFinishing || isDestroyed) return
         binding.tableStatus.text = message
     }
 
@@ -189,6 +193,7 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
+        nearby.clearListener(this)
         super.onDestroy()
     }
 
