@@ -10,10 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.confirmAction
+import com.lucapiciollo.giocodel15.core.ui.goHome
 import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.databinding.ActivityGameBinding
-import com.lucapiciollo.giocodel15.feature.home.HomeActivity
 import com.lucapiciollo.giocodel15.feature.result.ResultActivity
 import com.lucapiciollo.giocodel15.multiplayer.model.PlayerResult
 import com.lucapiciollo.giocodel15.multiplayer.nearby.DeviceIdentity
@@ -132,7 +133,14 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isHost) closeTableAsHost() else finish()
+                confirmAction(
+                    R.string.leave_match_title,
+                    R.string.leave_match_message,
+                    R.string.leave_match_confirm,
+                    R.string.leave_match_cancel
+                ) {
+                    if (isHost) closeTableAsHost() else leaveAsGuest()
+                }
             }
         })
     }
@@ -308,12 +316,14 @@ class GameActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         goHome()
     }
 
-    private fun goHome() {
-        startActivity(
-            Intent(this, HomeActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        )
-        finish()
+    /** Non-host leaving an active match: no HOST_CLOSED broadcast (that's the host's job), but
+     * still disconnect and clear local session state before returning to Home, same as the host
+     * path, instead of a bare `finish()` that used to just pop back to whatever screen (Nearby
+     * discovery/table setup) was underneath in the stack instead of Home. */
+    private fun leaveAsGuest() {
+        nearby.disconnectAll()
+        TableSession.clear()
+        goHome()
     }
 
     private fun renderStats() {

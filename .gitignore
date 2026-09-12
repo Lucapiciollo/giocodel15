@@ -14,3 +14,6 @@ app/build/
 *.keystore
 keystore.properties
 keystore/
+
+# Playwright MCP session artifacts (screenshots/logs from local visual testing)
+.playwright-mcp/

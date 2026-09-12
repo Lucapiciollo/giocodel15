@@ -11,12 +11,12 @@ import com.lucapiciollo.giocodel15.R
 import com.lucapiciollo.giocodel15.core.review.GameReviewPrompt
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.goHome
 import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivityResultBinding
 import com.lucapiciollo.giocodel15.databinding.ItemRankingBinding
 import com.lucapiciollo.giocodel15.feature.create.CreateTableActivity
 import com.lucapiciollo.giocodel15.feature.game.GameActivity
-import com.lucapiciollo.giocodel15.feature.home.HomeActivity
 import com.lucapiciollo.giocodel15.feature.nearby.NearbyTablesActivity
 import com.lucapiciollo.giocodel15.multiplayer.model.RoundEndMode
 import com.lucapiciollo.giocodel15.multiplayer.model.RoundParticipantStatus
@@ -279,14 +279,6 @@ class ResultActivity : AppCompatActivity(), NearbyConnectionManager.Listener {
         if (hostClosedHandled) return
         hostClosedHandled = true
         HostDisconnectDialog.show(this, nearby) { goHome() }
-    }
-
-    private fun goHome() {
-        startActivity(
-            Intent(this, HomeActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        )
-        finish()
     }
 
     /** No emoji medals per the Premium Gamer spec — rank is conveyed by the card's color

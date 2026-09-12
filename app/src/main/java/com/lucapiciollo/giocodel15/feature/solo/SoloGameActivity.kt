@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -12,10 +13,10 @@ import com.lucapiciollo.giocodel15.core.review.GameReviewPrompt
 import com.lucapiciollo.giocodel15.core.ui.PuzzleBoardConfig
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.goHome
 import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.databinding.ActivitySoloGameBinding
 import com.lucapiciollo.giocodel15.feature.game.GameViewModel
-import com.lucapiciollo.giocodel15.feature.home.HomeActivity
 import java.util.Locale
 
 /** Fully offline single-player practice mode: solve the puzzle alone, no Nearby transport,
@@ -74,6 +75,16 @@ class SoloGameActivity : AppCompatActivity() {
 
         binding.replayButton.setOnClickListener { replay() }
         binding.goHomeButton.setOnClickListener { goHome() }
+
+        // Offline/no session to protect: unlike the multiplayer GameActivity, leaving a solo
+        // puzzle never affects anyone else, so back always goes straight to Home without a
+        // confirmation dialog (fixes the previous default behavior, which had no override here
+        // and popped back to SoloSetupActivity instead of Home).
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                goHome()
+            }
+        })
     }
 
     private fun onPuzzleSolved() {
@@ -100,14 +111,6 @@ class SoloGameActivity : AppCompatActivity() {
                 putExtra(EXTRA_GRID_SIZE, gridSize)
                 putExtra(EXTRA_SEED, System.currentTimeMillis())
             }
-        )
-        finish()
-    }
-
-    private fun goHome() {
-        startActivity(
-            Intent(this, HomeActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         )
         finish()
     }

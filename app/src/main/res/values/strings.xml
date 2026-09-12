@@ -141,4 +141,18 @@
     <string name="update_ready_message">È stato scaricato un aggiornamento di Gioco del 15. Riavvia l\'app per applicarlo.</string>
     <string name="update_ready_restart">RIAVVIA ORA</string>
     <string name="update_ready_later">PIÙ TARDI</string>
+
+    <!-- Back navigation confirmations (hardware/gesture back button) -->
+    <string name="exit_app_title">Chiudere l\'app?</string>
+    <string name="exit_app_message">Vuoi davvero chiudere Gioco del 15?</string>
+    <string name="exit_app_confirm">ESCI</string>
+    <string name="exit_app_cancel">ANNULLA</string>
+
+    <string name="leave_match_title">Abbandonare la partita?</string>
+    <string name="leave_match_message">Se esci ora la partita in corso verrà interrotta per tutti i giocatori.</string>
+    <string name="leave_match_confirm">ABBANDONA</string>
+    <string name="leave_match_cancel">ANNULLA</string>
+
+    <string name="leave_table_title">Abbandonare il tavolo?</string>
+    <string name="leave_table_message">Se esci ora il tavolo verrà chiuso per tutti i giocatori in attesa.</string>
 </resources>

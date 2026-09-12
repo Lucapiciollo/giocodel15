@@ -2,6 +2,7 @@ package com.lucapiciollo.giocodel15.feature.home
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.lucapiciollo.giocodel15.R
@@ -9,6 +10,7 @@ import com.lucapiciollo.giocodel15.core.ui.applyHorizontalGradient
 import com.lucapiciollo.giocodel15.core.ui.applyNavigationBarBottomInset
 import com.lucapiciollo.giocodel15.core.ui.applyPressScaleAnimation
 import com.lucapiciollo.giocodel15.core.ui.applyStatusBarTopInset
+import com.lucapiciollo.giocodel15.core.ui.confirmAction
 import com.lucapiciollo.giocodel15.core.ui.playEntranceAnimation
 import com.lucapiciollo.giocodel15.core.update.GameUpdateChecker
 import com.lucapiciollo.giocodel15.databinding.ActivityHomeBinding
@@ -60,6 +62,17 @@ class HomeActivity : AppCompatActivity() {
         }
 
         GameUpdateChecker.checkForUpdate(this)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                confirmAction(
+                    R.string.exit_app_title,
+                    R.string.exit_app_message,
+                    R.string.exit_app_confirm,
+                    R.string.exit_app_cancel
+                ) { finish() }
+            }
+        })
     }
 
     override fun onResume() {
